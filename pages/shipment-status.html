@@ -65,6 +65,44 @@
     background: var(--slate-100);
     flex-shrink: 0;
   }
+
+  /* Fulfillment & OTIF projection */
+  .otif-impact {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--slate-100);
+    font-size: var(--text-xs);
+    color: var(--slate-500);
+  }
+  .otif-impact-order {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+  .otif-impact-order strong {
+    color: var(--slate-700);
+  }
+  .otif-forecast {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    padding: 2px 9px;
+    border-radius: 100px;
+    flex-shrink: 0;
+    letter-spacing: 0.01em;
+  }
+  .otif-forecast.otif-full   { background: var(--success-100); color: var(--success-500); }
+  .otif-forecast.otif-risk   { background: var(--amber-050);   color: var(--amber-500); border: 1px solid var(--amber-200); }
+  .otif-forecast.otif-miss   { background: var(--danger-100);  color: var(--danger-500); }
+  .otif-forecast.otif-partial { background: var(--cerulean-050); color: var(--cerulean-500); border: 1px solid var(--cerulean-100); }
 </style>
 </head>
 <body>
@@ -273,6 +311,7 @@
             <div style="display: flex; align-items: center; gap: var(--space-2);">
               <span style="font-size: var(--text-xs); color: var(--slate-500);">Old Dominion</span>
               <span class="badge badge-navy">LTL</span>
+              <span class="badge badge-outline">Full Order</span>
               <span class="badge badge-success">On Track</span>
             </div>
           </div>
@@ -313,6 +352,15 @@
               <div class="step-label">Delivered</div>
             </div>
           </div>
+
+          <div class="otif-impact">
+            <div class="otif-impact-order">
+              <strong>Order #ORD-2026-8841</strong>
+              <span>·</span>
+              <span>This shipment covers the full order quantity</span>
+            </div>
+            <span class="otif-forecast otif-full">↗ OTIF Projected: Full</span>
+          </div>
         </div>
 
         <!-- Card 2: UPS Freight — In Transit — At Risk (40%) -->
@@ -331,6 +379,7 @@
             <div style="display: flex; align-items: center; gap: var(--space-2);">
               <span style="font-size: var(--text-xs); color: var(--slate-500);">UPS Freight</span>
               <span class="badge badge-navy">LTL</span>
+              <span class="badge badge-blue">Partial · 2 of 3</span>
               <span class="badge badge-amber">At Risk</span>
               <span class="eta-slip">⚠ ETA slipped 6 hours</span>
             </div>
@@ -372,6 +421,15 @@
               <div class="step-label">Delivered</div>
             </div>
           </div>
+
+          <div class="otif-impact">
+            <div class="otif-impact-order">
+              <strong>Order #ORD-2026-8838</strong>
+              <span>·</span>
+              <span>Shipment 2 of 3 · covers approx. 33% of order qty · legs 1 &amp; 3 on track</span>
+            </div>
+            <span class="otif-forecast otif-risk">⚠ OTIF At Risk</span>
+          </div>
         </div>
 
         <!-- Card 3: ABF Freight — Delayed — Late (30%) -->
@@ -390,6 +448,7 @@
             <div style="display: flex; align-items: center; gap: var(--space-2);">
               <span style="font-size: var(--text-xs); color: var(--slate-500);">ABF Freight</span>
               <span class="badge badge-navy">LTL</span>
+              <span class="badge badge-blue">Partial · 1 of 3</span>
               <span class="badge badge-danger">Delayed</span>
             </div>
           </div>
@@ -430,6 +489,15 @@
               <div class="step-label">Delivered</div>
             </div>
           </div>
+
+          <div class="otif-impact">
+            <div class="otif-impact-order">
+              <strong>Order #ORD-2026-8831</strong>
+              <span>·</span>
+              <span>Shipment 1 of 3 · this leg delayed 2 days · legs 2 &amp; 3 unaffected</span>
+            </div>
+            <span class="otif-forecast otif-miss">✕ OTIF Partial Miss</span>
+          </div>
         </div>
 
         <!-- Card 4: XPO Logistics — Out for Delivery — On Track (85%) -->
@@ -448,6 +516,7 @@
             <div style="display: flex; align-items: center; gap: var(--space-2);">
               <span style="font-size: var(--text-xs); color: var(--slate-500);">XPO Logistics</span>
               <span class="badge badge-navy">TL</span>
+              <span class="badge badge-outline">Full Order</span>
               <span class="badge badge-success">On Track</span>
             </div>
           </div>
@@ -488,6 +557,15 @@
               <div class="step-label">Delivered</div>
             </div>
           </div>
+
+          <div class="otif-impact">
+            <div class="otif-impact-order">
+              <strong>Order #ORD-2026-8828</strong>
+              <span>·</span>
+              <span>This shipment covers the full order quantity · out for delivery now</span>
+            </div>
+            <span class="otif-forecast otif-full">↗ OTIF Projected: Full</span>
+          </div>
         </div>
 
         <!-- Card 5: Old Dominion — Delivered — 100% -->
@@ -506,8 +584,8 @@
             <div style="display: flex; align-items: center; gap: var(--space-2);">
               <span style="font-size: var(--text-xs); color: var(--slate-500);">Old Dominion</span>
               <span class="badge badge-navy">LTL</span>
+              <span class="badge badge-outline">Full Order</span>
               <span class="badge badge-success">Delivered</span>
-              <span class="badge badge-success">OTIF: Full · On-time</span>
             </div>
           </div>
 
@@ -545,6 +623,15 @@
               <div class="step-dot done">✓</div>
               <div class="step-label done">Delivered</div>
             </div>
+          </div>
+
+          <div class="otif-impact">
+            <div class="otif-impact-order">
+              <strong>Order #ORD-2026-8824</strong>
+              <span>·</span>
+              <span>Full order delivered on-time · received and confirmed by destination</span>
+            </div>
+            <span class="otif-forecast otif-full">✓ OTIF: Full &amp; On-time</span>
           </div>
         </div>
 
