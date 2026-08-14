@@ -3,682 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>US Bank Freight — Freight Payment Analytics</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Dashboard — US Bank Freight Analytics</title>
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/shell.css">
+<link rel="stylesheet" href="assets/css/components.css">
 <style>
-  /* ============================================================
-     DESIGN TOKENS (from design system v1.0)
-  ============================================================ */
-  :root {
-    --navy-900: #0D1B2E;
-    --navy-800: #122240;
-    --navy-700: #1A3254;
-    --navy-600: #204068;
-    --cerulean-500: #1F6EA8;
-    --cerulean-400: #2D8BC4;
-    --cerulean-300: #5BA8D4;
-    --cerulean-100: #D6EBF7;
-    --cerulean-050: #EEF6FB;
-    --amber-500: #D97D0F;
-    --amber-400: #F0930E;
-    --amber-200: #FDD89C;
-    --amber-050: #FEF5E4;
-    --slate-700: #3A4556;
-    --slate-500: #5C6E84;
-    --slate-300: #A8B6C5;
-    --slate-100: #DCE4EC;
-    --slate-050: #F2F5F8;
-    --white: #FFFFFF;
-    --off-white: #F7F9FB;
-    --success-500: #1D8A5C;
-    --success-100: #D1EFE2;
-    --danger-500: #C0392B;
-    --danger-100: #FAD7D3;
-
-    --font-display: 'DM Serif Display', Georgia, serif;
-    --font-body: 'Inter', system-ui, sans-serif;
-    --font-mono: 'DM Mono', 'Courier New', monospace;
-
-    --text-xs: 0.6875rem;
-    --text-sm: 0.8125rem;
-    --text-base: 0.9375rem;
-    --text-md: 1.0625rem;
-    --text-lg: 1.25rem;
-    --text-xl: 1.5rem;
-    --text-2xl: 2rem;
-
-    --space-1: 4px;
-    --space-2: 8px;
-    --space-3: 12px;
-    --space-4: 16px;
-    --space-5: 20px;
-    --space-6: 24px;
-    --space-8: 32px;
-    --space-10: 40px;
-    --space-12: 48px;
-
-    --radius-sm: 4px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
-    --radius-xl: 16px;
-
-    --shadow-card: 0 1px 4px rgba(13,27,46,0.08), 0 4px 16px rgba(13,27,46,0.06);
-    --shadow-elevated: 0 4px 12px rgba(13,27,46,0.12), 0 12px 32px rgba(13,27,46,0.10);
-    --shadow-focus: 0 0 0 3px rgba(31,110,168,0.25);
-
-    --seam: 2px solid var(--cerulean-400);
-
-    --sidebar-width: 232px;
-    --topbar-height: 68px;
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: var(--font-body);
-    font-size: var(--text-base);
-    line-height: 1.6;
-    color: var(--navy-900);
-    background: var(--off-white);
-    height: 100vh;
-    overflow: hidden;
-  }
-
-  /* ============================================================
-     APP SHELL
-  ============================================================ */
-  .app {
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
-  }
-
-  /* ============================================================
-     SIDEBAR
-  ============================================================ */
-  .sidebar {
-    width: var(--sidebar-width);
-    flex-shrink: 0;
-    background: var(--navy-900);
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
-  }
-
-  .sidebar-logo-area {
-    padding: var(--space-5) var(--space-5);
-    border-bottom: 1px solid var(--navy-700);
-    flex-shrink: 0;
-  }
-
-  .sidebar-logo-area svg {
-    width: 100%;
-    height: auto;
-    max-height: 36px;
-    display: block;
-  }
-
-  .sidebar-nav {
-    flex: 1;
-    padding: var(--space-5) var(--space-3);
-    overflow-y: auto;
-    scrollbar-width: none;
-  }
-  .sidebar-nav::-webkit-scrollbar { display: none; }
-
-  .nav-group-label {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.10em;
-    color: var(--slate-500);
-    padding: 0 var(--space-3);
-    margin-bottom: var(--space-2);
-    margin-top: var(--space-5);
-  }
-  .nav-group-label:first-child { margin-top: 0; }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: 9px var(--space-3);
-    border-radius: var(--radius-md);
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--slate-300);
-    cursor: pointer;
-    transition: background 0.12s, color 0.12s;
-    margin-bottom: 2px;
-    text-decoration: none;
-  }
-  .nav-item:hover { background: var(--navy-800); color: var(--white); }
-  .nav-item.active { background: var(--cerulean-500); color: var(--white); }
-
-  .nav-item-icon {
-    width: 18px;
-    flex-shrink: 0;
-    opacity: 0.7;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .nav-item.active .nav-item-icon { opacity: 1; }
-
-  .nav-ai-item {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: 9px var(--space-3);
-    border-radius: var(--radius-md);
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--amber-400);
-    cursor: pointer;
-    background: rgba(217,125,15,0.10);
-    border: 1px solid rgba(217,125,15,0.22);
-    margin-top: var(--space-4);
-  }
-  .nav-ai-item:hover { background: rgba(217,125,15,0.18); }
-
-  .sidebar-footer {
-    padding: var(--space-4) var(--space-3);
-    border-top: 1px solid var(--navy-700);
-    flex-shrink: 0;
-  }
-  .user-row {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-2) var(--space-3);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-  }
-  .user-row:hover { background: var(--navy-800); }
-  .user-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--cerulean-500);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--text-xs);
-    font-weight: 700;
-    color: var(--white);
-    flex-shrink: 0;
-  }
-  .user-name { font-size: var(--text-xs); font-weight: 600; color: var(--white); }
-  .user-role { font-size: var(--text-xs); color: var(--slate-500); }
-
-  /* ============================================================
-     MAIN AREA
-  ============================================================ */
-  .main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    min-width: 0;
-  }
-
-  /* ============================================================
-     TOPBAR
-  ============================================================ */
-  .topbar {
-    height: var(--topbar-height);
-    background: var(--white);
-    border-bottom: 1px solid var(--slate-100);
-    display: flex;
-    align-items: center;
-    padding: 0 var(--space-8);
-    gap: var(--space-5);
-    flex-shrink: 0;
-  }
-
-  .ai-query-bar {
-    flex: 1;
-    max-width: 600px;
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-3) var(--space-4);
-    background: var(--off-white);
-    border: 2px solid var(--amber-400);
-    border-radius: var(--radius-xl);
-    box-shadow: 0 2px 10px rgba(217,125,15,0.10);
-    transition: box-shadow 0.2s;
-  }
-  .ai-query-bar:focus-within {
-    box-shadow: 0 4px 16px rgba(217,125,15,0.18);
-  }
-  .ai-query-icon { color: var(--amber-500); font-size: var(--text-md); flex-shrink: 0; line-height: 1; }
-  .ai-query-input {
-    flex: 1;
-    border: none;
-    outline: none;
-    font-family: var(--font-body);
-    font-size: var(--text-sm);
-    color: var(--navy-900);
-    background: transparent;
-  }
-  .ai-query-input::placeholder { color: var(--slate-300); }
-
-  .topbar-right {
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
-    margin-left: auto;
-  }
-  .topbar-icon-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: var(--radius-md);
-    border: 1.5px solid var(--slate-100);
-    background: var(--white);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: var(--slate-500);
-    font-size: var(--text-base);
-    position: relative;
-  }
-  .topbar-icon-btn:hover { background: var(--slate-050); color: var(--navy-900); }
-  .notif-dot {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--amber-500);
-    border: 1.5px solid var(--white);
-  }
-
-  /* ============================================================
-     SCROLLABLE CONTENT
-  ============================================================ */
-  .content {
-    flex: 1;
-    overflow-y: auto;
-    padding: var(--space-8);
-    scrollbar-width: thin;
-    scrollbar-color: var(--slate-100) transparent;
-  }
-  .content::-webkit-scrollbar { width: 5px; }
-  .content::-webkit-scrollbar-track { background: transparent; }
-  .content::-webkit-scrollbar-thumb { background: var(--slate-100); border-radius: 10px; }
-
-  /* ============================================================
-     PAGE HEADER
-  ============================================================ */
-  .page-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: var(--space-6);
-  }
-  .page-title {
-    font-family: var(--font-body);
-    font-size: var(--text-xl);
-    font-weight: 700;
-    color: var(--navy-900);
-    line-height: 1.2;
-  }
-  .page-meta {
-    font-size: var(--text-xs);
-    color: var(--slate-500);
-    margin-top: 4px;
-    font-family: var(--font-mono);
-  }
-  .header-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-  }
-
-  /* ============================================================
-     BUTTONS (minimal set)
-  ============================================================ */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-5);
-    font-family: var(--font-body);
-    font-size: var(--text-sm);
-    font-weight: 600;
-    border-radius: var(--radius-md);
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background 0.15s, box-shadow 0.15s;
-    white-space: nowrap;
-  }
-  .btn-primary { background: var(--cerulean-500); color: var(--white); }
-  .btn-primary:hover { background: var(--cerulean-400); }
-  .btn-ghost { background: var(--white); color: var(--slate-700); border: 1.5px solid var(--slate-100); }
-  .btn-ghost:hover { background: var(--slate-050); }
-  .btn-ai { background: var(--amber-500); color: var(--white); }
-  .btn-ai:hover { background: var(--amber-400); box-shadow: 0 4px 12px rgba(217,125,15,0.28); }
-  .btn-sm { padding: var(--space-2) var(--space-4); font-size: var(--text-xs); }
-
-  /* ============================================================
-     STAT CARDS
-  ============================================================ */
-  .stat-row {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: var(--space-4);
-    margin-bottom: var(--space-6);
-  }
-
-  .stat-card {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-card);
-    padding: var(--space-5) var(--space-6);
-    border-top: var(--seam);
-  }
-  .stat-card.featured {
-    background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-700) 100%);
-    border-top: 2px solid var(--cerulean-400);
-  }
-  .stat-label {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.10em;
-    color: var(--slate-500);
-    margin-bottom: var(--space-2);
-  }
-  .stat-card.featured .stat-label { color: var(--cerulean-300); }
-  .stat-value {
-    font-family: var(--font-mono);
-    font-size: var(--text-2xl);
-    font-weight: 500;
-    color: var(--navy-900);
-    line-height: 1;
-    margin-bottom: var(--space-2);
-  }
-  .stat-card.featured .stat-value { color: var(--white); }
-  .stat-delta {
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    font-size: var(--text-xs);
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 100px;
-  }
-  .delta-up { color: var(--success-500); background: var(--success-100); }
-  .delta-down { color: var(--danger-500); background: var(--danger-100); }
-  .delta-neutral { color: var(--slate-500); background: var(--slate-100); }
-  .stat-card.featured .stat-delta.delta-up { color: #5DECA0; background: rgba(93,236,160,0.15); }
-  .stat-context {
-    font-size: var(--text-xs);
-    color: var(--slate-500);
-    margin-top: var(--space-2);
-  }
-  .stat-card.featured .stat-context { color: var(--cerulean-300); }
-
-  /* ============================================================
-     MAIN GRID
-  ============================================================ */
+  /* Dashboard-specific layout */
   .main-grid {
     display: grid;
     grid-template-columns: 1fr 340px;
     gap: var(--space-5);
     align-items: start;
   }
-
-  .left-col { display: flex; flex-direction: column; gap: var(--space-5); }
+  .left-col  { display: flex; flex-direction: column; gap: var(--space-5); }
   .right-col { display: flex; flex-direction: column; gap: var(--space-5); }
 
-  /* ============================================================
-     CHART CARD
-  ============================================================ */
-  .chart-card {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-card);
-    overflow: hidden;
-  }
-  .chart-header {
-    padding: var(--space-5) var(--space-6);
-    border-bottom: var(--seam);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .chart-title { font-size: var(--text-sm); font-weight: 600; color: var(--navy-900); }
-  .chart-subtitle { font-size: var(--text-xs); color: var(--slate-500); margin-top: 2px; }
-  .chart-actions { display: flex; align-items: center; gap: var(--space-2); }
-  .chart-body { padding: var(--space-6); }
-
-  /* Period tabs */
-  .period-tabs {
-    display: flex;
-    gap: 2px;
-    background: var(--slate-050);
-    border-radius: var(--radius-md);
-    padding: 3px;
-  }
-  .period-tab {
-    padding: 4px 12px;
-    font-size: var(--text-xs);
-    font-weight: 600;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    color: var(--slate-500);
-    border: none;
-    background: transparent;
-    transition: all 0.12s;
-  }
-  .period-tab.active { background: var(--white); color: var(--navy-900); box-shadow: 0 1px 3px rgba(13,27,46,0.10); }
-
-  /* Bar chart */
-  .bar-chart-area {
-    display: flex;
-    align-items: flex-end;
-    gap: 8px;
-    height: 120px;
-    margin-bottom: var(--space-3);
-  }
-  .bar-col {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    height: 100%;
-    justify-content: flex-end;
-  }
-  .bar {
-    width: 100%;
-    border-radius: 3px 3px 0 0;
-    transition: opacity 0.2s;
-    cursor: pointer;
-    min-height: 4px;
-  }
-  .bar:hover { opacity: 0.75; }
-  .bar-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--slate-500);
-    white-space: nowrap;
-  }
-
-  .chart-summary-row {
-    display: flex;
-    gap: var(--space-8);
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--slate-100);
-    margin-top: var(--space-4);
-  }
-  .chart-summary-item .s-label {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--slate-500);
-    margin-bottom: 4px;
-  }
-  .chart-summary-item .s-value {
-    font-family: var(--font-mono);
-    font-size: var(--text-xl);
-    font-weight: 500;
-    color: var(--navy-900);
-  }
-  .chart-summary-item .s-value.benchmark { color: var(--amber-500); }
-
-  /* ============================================================
-     TABLE
-  ============================================================ */
-  .table-card {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-card);
-    overflow: hidden;
-  }
-  .table-header {
-    padding: var(--space-5) var(--space-6);
-    border-bottom: var(--seam);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  table { width: 100%; border-collapse: collapse; }
-  thead { background: var(--slate-050); }
-  th {
-    padding: var(--space-3) var(--space-4);
-    text-align: left;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--slate-500);
-    font-weight: 500;
-    white-space: nowrap;
-    border-bottom: 1px solid var(--slate-100);
-  }
-  td {
-    padding: var(--space-3) var(--space-4);
-    font-size: var(--text-sm);
-    color: var(--slate-700);
-    border-bottom: 1px solid var(--slate-050);
-  }
-  tr:last-child td { border-bottom: none; }
-  tbody tr:hover { background: var(--cerulean-050); }
-  .td-mono { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--navy-900); }
-  .td-right { text-align: right; }
-
-  /* ============================================================
-     BADGES
-  ============================================================ */
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    padding: 2px 8px;
-    border-radius: 100px;
-    font-size: var(--text-xs);
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  .badge-success { background: var(--success-100); color: var(--success-500); }
-  .badge-amber { background: var(--amber-200); color: var(--amber-500); }
-  .badge-danger { background: var(--danger-100); color: var(--danger-500); }
-  .badge-blue { background: var(--cerulean-100); color: var(--cerulean-500); }
-  .badge-slate { background: var(--slate-100); color: var(--slate-700); }
-  .badge-navy { background: var(--navy-700); color: var(--white); font-size: 10px; padding: 2px 6px; }
-
-  /* ============================================================
-     AI INSIGHT CARD
-  ============================================================ */
-  .ai-card {
-    background: linear-gradient(135deg, var(--amber-050) 0%, var(--white) 65%);
-    border-radius: var(--radius-lg);
-    border: 1.5px solid var(--amber-200);
-    padding: var(--space-5) var(--space-6);
-    box-shadow: var(--shadow-card);
-  }
-  .ai-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: var(--space-4);
-  }
-  .ai-badge {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    padding: 3px 10px;
-    border-radius: 100px;
-    background: var(--amber-500);
-    color: var(--white);
-  }
-  .ai-ts {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--slate-500);
-  }
-  .ai-card-text {
-    font-size: var(--text-sm);
-    color: var(--slate-700);
-    line-height: 1.65;
-  }
-  .ai-card-actions {
-    display: flex;
-    gap: var(--space-2);
-    margin-top: var(--space-4);
-  }
-
-  /* ============================================================
-     CARRIER OTIF SCORECARDS
-  ============================================================ */
-  .carrier-card {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-card);
-    overflow: hidden;
-  }
-  .carrier-card-header {
-    padding: var(--space-5) var(--space-6);
-    border-bottom: var(--seam);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .carrier-row {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-4) var(--space-6);
-    border-bottom: 1px solid var(--slate-050);
-  }
-  .carrier-row:last-child { border-bottom: none; }
-  .carrier-row:hover { background: var(--cerulean-050); }
-
-  .carrier-name {
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--navy-900);
-    flex: 1;
-    min-width: 0;
-  }
-  .carrier-mode {
-    font-size: 10px;
-    color: var(--slate-500);
-    margin-top: 1px;
-  }
+  /* Carrier bar wrap — dashboard variant (flex: none, fixed width) */
   .carrier-otif-bar-wrap {
     flex: 1;
     display: flex;
@@ -686,136 +26,6 @@
     gap: 4px;
     min-width: 80px;
   }
-  .carrier-bar-track {
-    height: 5px;
-    background: var(--slate-100);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  .carrier-bar-fill {
-    height: 100%;
-    border-radius: 10px;
-    transition: width 0.4s ease;
-  }
-  .bar-good { background: var(--success-500); }
-  .bar-warn { background: var(--amber-500); }
-  .bar-bad { background: var(--danger-500); }
-
-  .carrier-pct {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    font-weight: 500;
-    width: 40px;
-    text-align: right;
-    flex-shrink: 0;
-  }
-  .pct-good { color: var(--success-500); }
-  .pct-warn { color: var(--amber-500); }
-  .pct-bad { color: var(--danger-500); }
-
-  /* ============================================================
-     ALERTS
-  ============================================================ */
-  .alert-strip {
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
-    padding: var(--space-3) var(--space-5);
-    border-radius: var(--radius-lg);
-    margin-bottom: var(--space-5);
-    font-size: var(--text-sm);
-  }
-  .alert-strip.warning {
-    background: var(--amber-050);
-    border-left: 3px solid var(--amber-400);
-    color: var(--slate-700);
-  }
-  .alert-icon { font-size: var(--text-md); flex-shrink: 0; }
-  .alert-body { flex: 1; }
-  .alert-body strong { font-weight: 600; }
-
-  /* ============================================================
-     TRANSIT TIME CARD
-  ============================================================ */
-  .transit-card {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-card);
-    overflow: hidden;
-  }
-  .transit-header {
-    padding: var(--space-5) var(--space-6);
-    border-bottom: var(--seam);
-  }
-  .transit-lane {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--space-3) var(--space-6);
-    border-bottom: 1px solid var(--slate-050);
-    gap: var(--space-3);
-  }
-  .transit-lane:last-child { border-bottom: none; }
-  .transit-lane:hover { background: var(--cerulean-050); }
-  .lane-name { font-size: var(--text-xs); color: var(--slate-700); font-weight: 500; flex: 1; }
-  .lane-carriers {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    flex: 1;
-  }
-  .lane-carrier-row {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-size: 11px;
-  }
-  .lane-carrier-name { color: var(--slate-500); width: 80px; flex-shrink: 0; font-size: 11px; }
-  .lane-time {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--navy-900);
-  }
-  .lane-time.best { color: var(--success-500); }
-  .lane-time.worst { color: var(--danger-500); }
-
-  /* ============================================================
-     QUERY SUGGESTION CHIPS
-  ============================================================ */
-  .suggestions {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: 0 var(--space-8);
-    height: 36px;
-    background: var(--white);
-    border-bottom: 1px solid var(--slate-050);
-    overflow-x: auto;
-    scrollbar-width: none;
-    flex-shrink: 0;
-  }
-  .suggestions::-webkit-scrollbar { display: none; }
-  .suggestion-label {
-    font-size: var(--text-xs);
-    color: var(--slate-500);
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .suggestion-chip {
-    padding: 3px 12px;
-    border-radius: 100px;
-    font-size: var(--text-xs);
-    font-weight: 500;
-    color: var(--cerulean-500);
-    background: var(--cerulean-050);
-    border: 1px solid var(--cerulean-100);
-    cursor: pointer;
-    white-space: nowrap;
-    flex-shrink: 0;
-    transition: background 0.12s;
-  }
-  .suggestion-chip:hover { background: var(--cerulean-100); }
 </style>
 </head>
 <body>
@@ -824,99 +34,58 @@
 
   <!-- ==================== SIDEBAR ==================== -->
   <aside class="sidebar">
-
-    <!-- Logo: inline SVG with navy fills converted to white for dark sidebar -->
     <div class="sidebar-logo-area">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 258.52 72" aria-label="US Bank Freight">
-        <!-- Red shield mark — unchanged -->
-        <polygon points="0 54.5 43.5 72 87 54.5 87 0 0 0 0 54.5" fill="#cf2a36"/>
-        <!-- White text inside shield — unchanged -->
-        <path d="M63.83,85.76c-1.9,3.15-6.08,4.47-9.74,4.47-8.87,0-13.85-6.45-13.85-14.21V53H51.38V73.67c0,3.52,1.9,6.3,5.86,6.3,3.74,0,6.08-2.56,6.08-6.22V53H74.46V82.9a58.43,58.43,0,0,0,.36,6.52H64.13A25.91,25.91,0,0,1,63.83,85.76Z" transform="translate(-30.74 -38.59)" fill="#fff"/>
-        <path d="M88.31,77.41c.15,2.49,1.91,4.91,5.72,4.91,2.86,0,4.25-1.54,4.25-3.15,0-1.32-.88-2.42-3.59-3l-4.18-1C82.75,73.53,79.67,69.13,79.67,64c0-6.66,5.86-12.09,14-12.09,10.55,0,14.22,6.6,14.58,10.85L99,64.44A4.78,4.78,0,0,0,93.81,60c-2.13,0-4,1.25-4,3.15,0,1.54,1.25,2.42,2.86,2.71l4.84,1c7.54,1.53,11.2,6.08,11.2,11.42,0,6.23-4.76,12.31-14.5,12.31-11.43,0-15.09-7.4-15.39-11.43Z" transform="translate(-30.74 -38.59)" fill="#fff"/>
-        <!-- "bank" wordmark — fill changed from #001e79 to white -->
-        <path d="M148.71,52.13c-5,0-9,2.06-10.55,4.33V38.59H127.24V89.42H138v-4.1c1.69,2.79,5.42,4.91,10.26,4.91,10.18,0,17.36-8,17.36-19.12C165.63,60.19,159.26,52.13,148.71,52.13Zm-2.42,28.14c-4.32,0-8.28-3.08-8.28-9.09s4-9,8.28-9,8.21,2.86,8.21,9S150.61,80.27,146.29,80.27Z" transform="translate(-30.74 -38.59)" fill="#ffffff"/>
-        <path d="M200.56,83.78V66c0-7.47-4.32-14.07-16.11-14.07-10.7,0-15.54,6.89-16,12.09l9.67,2a5.86,5.86,0,0,1,6.23-5.35c3.52,0,5.35,1.83,5.35,4,0,1.24-.66,2.2-2.64,2.49l-8.57,1.32c-6,.88-10.77,4.54-10.77,11,0,5.78,4.62,11.06,12.6,11.06,4.84,0,8.35-2,10.26-5.13a17.21,17.21,0,0,0,.37,4.1h10A36,36,0,0,1,200.56,83.78Zm-10.84-8.64c0,5.64-3.37,7.25-6.67,7.25-3.07,0-4.32-1.83-4.32-3.74,0-2.56,1.76-3.66,4.1-4l6.89-1.1Z" transform="translate(-30.74 -38.59)" fill="#ffffff"/>
-        <path d="M239.63,66.57V89.42H228.5v-21c0-3.59-1.91-6.3-5.94-6.3-3.66,0-6,2.71-6,6.37V89.42H205.42V53h10.77v4.18c2-3.44,6.45-5.13,10.18-5.13C235.53,52.06,239.63,58.58,239.63,66.57Z" transform="translate(-30.74 -38.59)" fill="#ffffff"/>
-        <polygon points="225.03 0 225.03 26.66 236.09 14.43 250.53 14.43 236.31 29.74 250.82 50.84 237.19 50.84 228.62 38.02 225.03 41.9 225.03 50.84 213.9 50.84 213.9 0 225.03 0" fill="#ffffff"/>
-        <!-- R mark -->
-        <path d="M286,83.37a3.25,3.25,0,1,0,3.25,3.24A3.22,3.22,0,0,0,286,83.37Zm0,6a2.81,2.81,0,1,1,2.79-2.81A2.77,2.77,0,0,1,286,89.42Z" transform="translate(-30.74 -38.59)" fill="#ffffff"/>
-        <path d="M287.41,87.62a1,1,0,0,0-.19-.55.87.87,0,0,0-.61-.35,1.22,1.22,0,0,0,.51-.17.79.79,0,0,0,.35-.7.89.89,0,0,0-.55-.91,2.87,2.87,0,0,0-1-.13H284.7v3.57h.62V87h.5a1.63,1.63,0,0,1,.7.11c.35.21.33.66.34,1.06a.58.58,0,0,0,0,.23h.58a.55.55,0,0,1-.05-.23C287.41,88,287.41,87.91,287.41,87.62Zm-1.52-1.08h-.57v-1.3h.54c.76,0,1,.18,1,.66S286.44,86.54,285.89,86.54Z" transform="translate(-30.74 -38.59)" fill="#ffffff"/>
-      </svg>
+      <img src="assets/img/logo-white.svg" alt="US Bank">
     </div>
 
     <nav class="sidebar-nav">
-
       <div class="nav-group-label">Overview</div>
-      <a class="nav-item active" href="#">
-        <span class="nav-item-icon">
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="1" width="5.5" height="5.5" rx="1" fill="currentColor"/><rect x="8.5" y="1" width="5.5" height="5.5" rx="1" fill="currentColor"/><rect x="1" y="8.5" width="5.5" height="5.5" rx="1" fill="currentColor"/><rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1" fill="currentColor"/></svg>
-        </span>
+      <a class="nav-item active" href="../index.html">
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="1" width="5.5" height="5.5" rx="1" fill="currentColor"/><rect x="8.5" y="1" width="5.5" height="5.5" rx="1" fill="currentColor"/><rect x="1" y="8.5" width="5.5" height="5.5" rx="1" fill="currentColor"/><rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1" fill="currentColor"/></svg></span>
         Dashboard
       </a>
-      <a class="nav-item" href="#">
-        <span class="nav-item-icon">
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="2" width="13" height="1.5" rx=".75" fill="currentColor"/><rect x="1" y="6.75" width="13" height="1.5" rx=".75" fill="currentColor"/><rect x="1" y="11.5" width="9" height="1.5" rx=".75" fill="currentColor"/></svg>
-        </span>
+      <a class="nav-item" href="pages/invoices.html">
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="2" width="13" height="1.5" rx=".75" fill="currentColor"/><rect x="1" y="6.75" width="13" height="1.5" rx=".75" fill="currentColor"/><rect x="1" y="11.5" width="9" height="1.5" rx=".75" fill="currentColor"/></svg></span>
         Invoices
       </a>
-      <a class="nav-item" href="#">
-        <span class="nav-item-icon">
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M7.5 4v3.5l2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </span>
+      <a class="nav-item" href="pages/shipment-status.html">
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M7.5 4v3.5l2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
         Shipment Status
       </a>
       <a class="nav-item" href="#">
-        <span class="nav-item-icon">
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="3" width="13" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 3V2m5 1V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </span>
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="3" width="13" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 3V2m5 1V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
         Payments
       </a>
 
       <div class="nav-group-label">Analytics</div>
       <a class="nav-item" href="#">
-        <span class="nav-item-icon">
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M1 11.5L5.5 7l3 3L14 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M1 11.5L5.5 7l3 3L14 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         Spend Analysis
       </a>
-      <a class="nav-item" href="#">
-        <span class="nav-item-icon">
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1.5v12M1.5 7.5h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="7.5" cy="7.5" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
-        </span>
+      <a class="nav-item" href="pages/carrier-performance.html">
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1.5v12M1.5 7.5h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="7.5" cy="7.5" r="3" stroke="currentColor" stroke-width="1.5"/></svg></span>
         Carrier Performance
       </a>
       <a class="nav-item" href="#">
-        <span class="nav-item-icon">
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 7.5h11M9.5 4l3.5 3.5L9.5 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 7.5h11M9.5 4l3.5 3.5L9.5 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
         Lane Intelligence
       </a>
       <a class="nav-item" href="#">
-        <span class="nav-item-icon">
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="8" width="3" height="5" rx=".5" fill="currentColor"/><rect x="6" y="5" width="3" height="8" rx=".5" fill="currentColor"/><rect x="11" y="2" width="3" height="11" rx=".5" fill="currentColor"/></svg>
-        </span>
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="8" width="3" height="5" rx=".5" fill="currentColor"/><rect x="6" y="5" width="3" height="8" rx=".5" fill="currentColor"/><rect x="11" y="2" width="3" height="11" rx=".5" fill="currentColor"/></svg></span>
         Benchmarks
       </a>
 
       <div class="nav-group-label">Finance</div>
-      <a class="nav-item" href="#">
-        <span class="nav-item-icon">
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1a6.5 6.5 0 100 13A6.5 6.5 0 007.5 1zm0 2.5v4l3 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </span>
+      <a class="nav-item" href="pages/exceptions.html">
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1a6.5 6.5 0 100 13A6.5 6.5 0 007.5 1zm0 2.5v4l3 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
         Exceptions
       </a>
       <a class="nav-item" href="#">
-        <span class="nav-item-icon">
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 4h11M2 7.5h8M2 11h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </span>
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 4h11M2 7.5h8M2 11h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
         Reconciliation
       </a>
 
-      <div class="nav-ai-item">
-        <span>✦</span>
-        Ask AI
-      </div>
-
+      <div class="nav-ai-item"><span>✦</span> Ask AI</div>
     </nav>
 
     <div class="sidebar-footer">
@@ -933,7 +102,6 @@
   <!-- ==================== MAIN ==================== -->
   <div class="main">
 
-    <!-- Topbar with AI Query -->
     <div class="topbar">
       <div class="ai-query-bar">
         <span class="ai-query-icon">✦</span>
@@ -941,15 +109,11 @@
         <button class="btn btn-ai btn-sm">Ask</button>
       </div>
       <div class="topbar-right">
-        <div class="topbar-icon-btn">
-          🔔
-          <span class="notif-dot"></span>
-        </div>
+        <div class="topbar-icon-btn">🔔<span class="notif-dot"></span></div>
         <div class="topbar-icon-btn">⚙</div>
       </div>
     </div>
 
-    <!-- Suggestion chips -->
     <div class="suggestions">
       <span class="suggestion-label">Suggested:</span>
       <span class="suggestion-chip">Which carriers are missing OTIF targets?</span>
@@ -959,10 +123,8 @@
       <span class="suggestion-chip">Unpaid invoices older than 30 days</span>
     </div>
 
-    <!-- Scrollable content -->
     <div class="content">
 
-      <!-- Page header -->
       <div class="page-header">
         <div>
           <div class="page-title">Dashboard</div>
@@ -979,60 +141,53 @@
         </div>
       </div>
 
-      <!-- Alert -->
       <div class="alert-strip warning">
         <span class="alert-icon">⚠</span>
         <div class="alert-body">
           <strong>OTIF below threshold on Dallas → Nashville lane.</strong>
-          FedEx Freight at 81.4% over last 30 days — 8.6 pts below your 90% target. <a href="#" style="color:var(--cerulean-500);">Review carrier scorecard →</a>
+          FedEx Freight at 81.4% over last 30 days — 8.6 pts below your 90% target.
+          <a href="pages/carrier-performance.html" style="color:var(--cerulean-500);">Review carrier scorecard →</a>
         </div>
         <button class="btn btn-ghost btn-sm">Dismiss</button>
       </div>
 
       <!-- Stat Cards -->
       <div class="stat-row">
-
         <div class="stat-card featured">
           <div class="stat-label">Overall OTIF Rate</div>
           <div class="stat-value">94.2%</div>
           <span class="stat-delta delta-up">↑ 1.4 pts vs last period</span>
           <div class="stat-context">On-time & full · All carriers</div>
         </div>
-
         <div class="stat-card">
           <div class="stat-label">Total Freight Spend</div>
           <div class="stat-value">$42.1M</div>
           <span class="stat-delta delta-down">↑ 3.2% vs prior period</span>
           <div class="stat-context">YTD through Aug 2026</div>
         </div>
-
         <div class="stat-card">
           <div class="stat-label">Invoices Processed</div>
           <div class="stat-value">18,340</div>
           <span class="stat-delta delta-neutral">— No change</span>
           <div class="stat-context">Last 30 days</div>
         </div>
-
         <div class="stat-card">
           <div class="stat-label">Audit Recovery</div>
           <div class="stat-value">$284K</div>
           <span class="stat-delta delta-up">↑ Saved this quarter</span>
           <div class="stat-context">BOL discrepancies caught</div>
         </div>
-
         <div class="stat-card">
           <div class="stat-label">Open Exceptions</div>
           <div class="stat-value">37</div>
           <span class="stat-delta delta-down">↑ 12 new this week</span>
           <div class="stat-context">Requires resolution</div>
         </div>
-
       </div>
 
       <!-- Main Grid -->
       <div class="main-grid">
 
-        <!-- Left Column -->
         <div class="left-col">
 
           <!-- Spend Chart -->
@@ -1065,7 +220,7 @@
               <div class="chart-summary-row">
                 <div class="chart-summary-item"><div class="s-label">This week</div><div class="s-value">$3.84M</div></div>
                 <div class="chart-summary-item"><div class="s-label">Avg (12W)</div><div class="s-value">$3.27M</div></div>
-                <div class="chart-summary-item"><div class="s-label">vs Benchmark</div><div class="s-value benchmark">+8.3%</div></div>
+                <div class="chart-summary-item"><div class="s-label">vs Benchmark</div><div class="s-value highlight">+8.3%</div></div>
                 <div class="chart-summary-item"><div class="s-label">LTL share</div><div class="s-value">61%</div></div>
               </div>
             </div>
@@ -1080,7 +235,7 @@
               </div>
               <div style="display:flex; gap:var(--space-2);">
                 <button class="btn btn-ghost btn-sm">Filter</button>
-                <button class="btn btn-primary btn-sm">View all invoices →</button>
+                <a href="pages/invoices.html" class="btn btn-primary btn-sm">View all invoices →</a>
               </div>
             </div>
             <table>
@@ -1099,10 +254,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>
-                    <div class="td-mono">INV-2026-00041897</div>
-                    <div style="font-family:var(--font-mono); font-size:10px; color:var(--slate-500);">PRO: 4829-01847</div>
-                  </td>
+                  <td><div class="td-mono">INV-2026-00041897</div><div class="td-sub">PRO: 4829-01847</div></td>
                   <td style="font-size:var(--text-xs);">FedEx Freight</td>
                   <td><span class="badge badge-navy">LTL</span></td>
                   <td style="font-size:var(--text-xs); color:var(--slate-500);">Chicago, IL → Atlanta, GA</td>
@@ -1112,11 +264,8 @@
                   <td><span class="badge badge-success">Paid</span></td>
                   <td><button class="btn btn-ghost btn-sm" style="padding:3px 8px;">→</button></td>
                 </tr>
-                <tr>
-                  <td>
-                    <div class="td-mono">INV-2026-00041721</div>
-                    <div style="font-family:var(--font-mono); font-size:10px; color:var(--slate-500);">PRO: 2210-88432</div>
-                  </td>
+                <tr class="row-flagged">
+                  <td><div class="td-mono">INV-2026-00041721</div><div class="td-sub">PRO: 2210-88432</div></td>
                   <td style="font-size:var(--text-xs);">UPS Freight</td>
                   <td><span class="badge badge-navy">LTL</span></td>
                   <td style="font-size:var(--text-xs); color:var(--slate-500);">Los Angeles, CA → Denver, CO</td>
@@ -1126,11 +275,8 @@
                   <td><span class="badge badge-amber">Pending Audit</span></td>
                   <td><button class="btn btn-ghost btn-sm" style="padding:3px 8px;">→</button></td>
                 </tr>
-                <tr>
-                  <td>
-                    <div class="td-mono">INV-2026-00041654</div>
-                    <div style="font-family:var(--font-mono); font-size:10px; color:var(--slate-500);">PRO: 9914-22019</div>
-                  </td>
+                <tr class="row-error">
+                  <td><div class="td-mono">INV-2026-00041654</div><div class="td-sub">PRO: 9914-22019</div></td>
                   <td style="font-size:var(--text-xs);">SAIA LTL</td>
                   <td><span class="badge badge-navy">LTL</span></td>
                   <td style="font-size:var(--text-xs); color:var(--slate-500);">Dallas, TX → Nashville, TN</td>
@@ -1141,10 +287,7 @@
                   <td><button class="btn btn-ghost btn-sm" style="padding:3px 8px;">→</button></td>
                 </tr>
                 <tr>
-                  <td>
-                    <div class="td-mono">INV-2026-00041523</div>
-                    <div style="font-family:var(--font-mono); font-size:10px; color:var(--slate-500);">PRO: 7701-56234</div>
-                  </td>
+                  <td><div class="td-mono">INV-2026-00041523</div><div class="td-sub">PRO: 7701-56234</div></td>
                   <td style="font-size:var(--text-xs);">XPO Logistics</td>
                   <td><span class="badge badge-navy">TL</span></td>
                   <td style="font-size:var(--text-xs); color:var(--slate-500);">Memphis, TN → Philadelphia, PA</td>
@@ -1155,10 +298,7 @@
                   <td><button class="btn btn-ghost btn-sm" style="padding:3px 8px;">→</button></td>
                 </tr>
                 <tr>
-                  <td>
-                    <div class="td-mono">INV-2026-00041488</div>
-                    <div style="font-family:var(--font-mono); font-size:10px; color:var(--slate-500);">PRO: 3308-77601</div>
-                  </td>
+                  <td><div class="td-mono">INV-2026-00041488</div><div class="td-sub">PRO: 3308-77601</div></td>
                   <td style="font-size:var(--text-xs);">Old Dominion</td>
                   <td><span class="badge badge-navy">LTL</span></td>
                   <td style="font-size:var(--text-xs); color:var(--slate-500);">Cincinnati, OH → Kansas City, MO</td>
@@ -1174,10 +314,8 @@
 
         </div>
 
-        <!-- Right Column -->
         <div class="right-col">
 
-          <!-- AI Insight Card -->
           <div class="ai-card">
             <div class="ai-card-header">
               <span class="ai-badge">✦ AI Insight</span>
@@ -1192,163 +330,89 @@
             </div>
           </div>
 
-          <!-- Carrier OTIF Scorecards -->
           <div class="carrier-card">
             <div class="carrier-card-header">
               <div>
                 <div class="chart-title">Carrier OTIF — 30 Days</div>
                 <div class="chart-subtitle">On-time & full · All lanes</div>
               </div>
-              <button class="btn btn-ghost btn-sm">Full report</button>
+              <a href="pages/carrier-performance.html" class="btn btn-ghost btn-sm">Full report</a>
             </div>
-
             <div class="carrier-row">
-              <div>
-                <div class="carrier-name">Old Dominion</div>
-                <div class="carrier-mode">LTL</div>
-              </div>
-              <div class="carrier-otif-bar-wrap">
-                <div class="carrier-bar-track"><div class="carrier-bar-fill bar-good" style="width:97.4%;"></div></div>
-              </div>
+              <div class="carrier-info"><div class="carrier-name">Old Dominion</div><div class="carrier-mode">LTL</div></div>
+              <div class="carrier-bar-wrap"><div class="carrier-bar-track"><div class="carrier-bar-fill bar-good" style="width:97.4%;"></div></div></div>
               <div class="carrier-pct pct-good">97.4%</div>
             </div>
-
             <div class="carrier-row">
-              <div>
-                <div class="carrier-name">XPO Logistics</div>
-                <div class="carrier-mode">TL · LTL</div>
-              </div>
-              <div class="carrier-otif-bar-wrap">
-                <div class="carrier-bar-track"><div class="carrier-bar-fill bar-good" style="width:95.1%;"></div></div>
-              </div>
+              <div class="carrier-info"><div class="carrier-name">XPO Logistics</div><div class="carrier-mode">TL · LTL</div></div>
+              <div class="carrier-bar-wrap"><div class="carrier-bar-track"><div class="carrier-bar-fill bar-good" style="width:95.1%;"></div></div></div>
               <div class="carrier-pct pct-good">95.1%</div>
             </div>
-
             <div class="carrier-row">
-              <div>
-                <div class="carrier-name">SAIA LTL Freight</div>
-                <div class="carrier-mode">LTL</div>
-              </div>
-              <div class="carrier-otif-bar-wrap">
-                <div class="carrier-bar-track"><div class="carrier-bar-fill bar-good" style="width:93.7%;"></div></div>
-              </div>
+              <div class="carrier-info"><div class="carrier-name">SAIA LTL Freight</div><div class="carrier-mode">LTL</div></div>
+              <div class="carrier-bar-wrap"><div class="carrier-bar-track"><div class="carrier-bar-fill bar-good" style="width:93.7%;"></div></div></div>
               <div class="carrier-pct pct-good">93.7%</div>
             </div>
-
             <div class="carrier-row">
-              <div>
-                <div class="carrier-name">UPS Freight</div>
-                <div class="carrier-mode">LTL · Parcel</div>
-              </div>
-              <div class="carrier-otif-bar-wrap">
-                <div class="carrier-bar-track"><div class="carrier-bar-fill bar-warn" style="width:88.2%;"></div></div>
-              </div>
+              <div class="carrier-info"><div class="carrier-name">UPS Freight</div><div class="carrier-mode">LTL · Parcel</div></div>
+              <div class="carrier-bar-wrap"><div class="carrier-bar-track"><div class="carrier-bar-fill bar-warn" style="width:88.2%;"></div></div></div>
               <div class="carrier-pct pct-warn">88.2%</div>
             </div>
-
             <div class="carrier-row">
-              <div>
-                <div class="carrier-name">FedEx Freight</div>
-                <div class="carrier-mode">LTL</div>
-              </div>
-              <div class="carrier-otif-bar-wrap">
-                <div class="carrier-bar-track"><div class="carrier-bar-fill bar-warn" style="width:85.6%;"></div></div>
-              </div>
+              <div class="carrier-info"><div class="carrier-name">FedEx Freight</div><div class="carrier-mode">LTL</div></div>
+              <div class="carrier-bar-wrap"><div class="carrier-bar-track"><div class="carrier-bar-fill bar-warn" style="width:85.6%;"></div></div></div>
               <div class="carrier-pct pct-warn">85.6%</div>
             </div>
-
             <div class="carrier-row">
-              <div>
-                <div class="carrier-name">ABF Freight</div>
-                <div class="carrier-mode">LTL</div>
-              </div>
-              <div class="carrier-otif-bar-wrap">
-                <div class="carrier-bar-track"><div class="carrier-bar-fill bar-bad" style="width:78.3%;"></div></div>
-              </div>
+              <div class="carrier-info"><div class="carrier-name">ABF Freight</div><div class="carrier-mode">LTL</div></div>
+              <div class="carrier-bar-wrap"><div class="carrier-bar-track"><div class="carrier-bar-fill bar-bad" style="width:78.3%;"></div></div></div>
               <div class="carrier-pct pct-bad">78.3%</div>
             </div>
-
           </div>
 
-          <!-- Transit Time by Lane -->
           <div class="transit-card">
             <div class="transit-header">
               <div class="chart-title">Time to Location by Carrier</div>
               <div class="chart-subtitle">Avg transit days · Top lanes · Last 30 days</div>
             </div>
-
             <div class="transit-lane">
               <div class="lane-name">Chicago → Atlanta</div>
               <div class="lane-carriers">
-                <div class="lane-carrier-row">
-                  <span class="lane-carrier-name">Old Dominion</span>
-                  <span class="lane-time best">2.1 days</span>
-                </div>
-                <div class="lane-carrier-row">
-                  <span class="lane-carrier-name">XPO</span>
-                  <span class="lane-time">2.4 days</span>
-                </div>
-                <div class="lane-carrier-row">
-                  <span class="lane-carrier-name">FedEx Freight</span>
-                  <span class="lane-time worst">3.2 days</span>
-                </div>
+                <div class="lane-carrier-row"><span class="lane-carrier-name">Old Dominion</span><span class="lane-time best">2.1 days</span></div>
+                <div class="lane-carrier-row"><span class="lane-carrier-name">XPO</span><span class="lane-time">2.4 days</span></div>
+                <div class="lane-carrier-row"><span class="lane-carrier-name">FedEx Freight</span><span class="lane-time worst">3.2 days</span></div>
               </div>
             </div>
-
             <div class="transit-lane">
               <div class="lane-name">Dallas → Nashville</div>
               <div class="lane-carriers">
-                <div class="lane-carrier-row">
-                  <span class="lane-carrier-name">SAIA</span>
-                  <span class="lane-time best">1.8 days</span>
-                </div>
-                <div class="lane-carrier-row">
-                  <span class="lane-carrier-name">XPO</span>
-                  <span class="lane-time">2.0 days</span>
-                </div>
-                <div class="lane-carrier-row">
-                  <span class="lane-carrier-name">ABF</span>
-                  <span class="lane-time worst">2.9 days</span>
-                </div>
+                <div class="lane-carrier-row"><span class="lane-carrier-name">SAIA</span><span class="lane-time best">1.8 days</span></div>
+                <div class="lane-carrier-row"><span class="lane-carrier-name">XPO</span><span class="lane-time">2.0 days</span></div>
+                <div class="lane-carrier-row"><span class="lane-carrier-name">ABF</span><span class="lane-time worst">2.9 days</span></div>
               </div>
             </div>
-
             <div class="transit-lane">
               <div class="lane-name">LA → Denver</div>
               <div class="lane-carriers">
-                <div class="lane-carrier-row">
-                  <span class="lane-carrier-name">Old Dominion</span>
-                  <span class="lane-time best">1.5 days</span>
-                </div>
-                <div class="lane-carrier-row">
-                  <span class="lane-carrier-name">UPS Freight</span>
-                  <span class="lane-time worst">2.3 days</span>
-                </div>
+                <div class="lane-carrier-row"><span class="lane-carrier-name">Old Dominion</span><span class="lane-time best">1.5 days</span></div>
+                <div class="lane-carrier-row"><span class="lane-carrier-name">UPS Freight</span><span class="lane-time worst">2.3 days</span></div>
               </div>
             </div>
-
             <div class="transit-lane">
               <div class="lane-name">Memphis → Philadelphia</div>
               <div class="lane-carriers">
-                <div class="lane-carrier-row">
-                  <span class="lane-carrier-name">XPO</span>
-                  <span class="lane-time best">2.2 days</span>
-                </div>
-                <div class="lane-carrier-row">
-                  <span class="lane-carrier-name">FedEx Freight</span>
-                  <span class="lane-time worst">3.0 days</span>
-                </div>
+                <div class="lane-carrier-row"><span class="lane-carrier-name">XPO</span><span class="lane-time best">2.2 days</span></div>
+                <div class="lane-carrier-row"><span class="lane-carrier-name">FedEx Freight</span><span class="lane-time worst">3.0 days</span></div>
               </div>
             </div>
-
           </div>
 
         </div>
       </div>
 
-    </div><!-- /content -->
-  </div><!-- /main -->
-</div><!-- /app -->
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

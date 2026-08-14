@@ -1,0 +1,351 @@
+/*
+  shell.css — App Shell
+  Covers the fixed chrome: sidebar, topbar, suggestion chips,
+  scrollable content area, and page-header. Nothing in here
+  should be page-specific — keep page layouts in their own
+  <style> block or a future pages.css.
+*/
+
+/* ============================================================
+   RESET
+============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  color: var(--navy-900);
+  background: var(--off-white);
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ============================================================
+   APP SHELL
+============================================================ */
+.app {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ============================================================
+   SIDEBAR
+============================================================ */
+.sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  background: var(--navy-900);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  border-right: 1px solid var(--navy-700);
+}
+
+.sidebar-logo-area {
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--navy-700);
+  flex-shrink: 0;
+}
+
+.sidebar-logo-area img {
+  width: 100%;
+  height: auto;
+  max-height: 38px;
+  display: block;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: var(--space-5) var(--space-3);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.sidebar-nav::-webkit-scrollbar { display: none; }
+
+/* Nav groups */
+.nav-group-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  color: var(--slate-500);
+  padding: 0 var(--space-3);
+  margin-bottom: var(--space-2);
+  margin-top: var(--space-5);
+}
+.nav-group-label:first-child { margin-top: 0; }
+
+/* Nav items */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 9px var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--slate-300);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  margin-bottom: 2px;
+  text-decoration: none;
+}
+.nav-item:hover { background: var(--navy-800); color: var(--white); }
+.nav-item.active { background: var(--cerulean-500); color: var(--white); }
+
+.nav-item-icon {
+  width: 18px;
+  flex-shrink: 0;
+  opacity: 0.65;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.nav-item:hover .nav-item-icon,
+.nav-item.active .nav-item-icon { opacity: 1; }
+
+/* AI nav item */
+.nav-ai-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 9px var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--amber-400);
+  cursor: pointer;
+  background: rgba(217,125,15,0.10);
+  border: 1px solid rgba(217,125,15,0.22);
+  margin-top: var(--space-4);
+  transition: background 0.12s;
+}
+.nav-ai-item:hover { background: rgba(217,125,15,0.18); }
+
+/* Sidebar footer / user */
+.sidebar-footer {
+  padding: var(--space-4) var(--space-3);
+  border-top: 1px solid var(--navy-700);
+  flex-shrink: 0;
+}
+.user-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.user-row:hover { background: var(--navy-800); }
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--cerulean-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--white);
+  flex-shrink: 0;
+}
+.user-name  { font-size: var(--text-xs); font-weight: 600; color: var(--white); }
+.user-role  { font-size: var(--text-xs); color: var(--slate-500); }
+
+/* ============================================================
+   MAIN AREA
+============================================================ */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ============================================================
+   TOPBAR
+============================================================ */
+.topbar {
+  height: var(--topbar-height);
+  background: var(--white);
+  border-bottom: 1px solid var(--slate-100);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-8);
+  gap: var(--space-5);
+  flex-shrink: 0;
+}
+
+/* AI Query Bar */
+.ai-query-bar {
+  flex: 1;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--off-white);
+  border: 2px solid var(--amber-400);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 2px 10px rgba(217,125,15,0.10);
+  transition: box-shadow 0.2s;
+}
+.ai-query-bar:focus-within { box-shadow: 0 4px 16px rgba(217,125,15,0.18); }
+.ai-query-icon  { color: var(--amber-500); font-size: var(--text-md); flex-shrink: 0; line-height: 1; }
+.ai-query-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--navy-900);
+  background: transparent;
+}
+.ai-query-input::placeholder { color: var(--slate-300); }
+
+/* Topbar right */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-left: auto;
+}
+.topbar-icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--slate-100);
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--slate-500);
+  font-size: var(--text-base);
+  position: relative;
+}
+.topbar-icon-btn:hover { background: var(--slate-050); color: var(--navy-900); }
+.notif-dot {
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--amber-500);
+  border: 1.5px solid var(--white);
+}
+
+/* ============================================================
+   SUGGESTION CHIPS
+============================================================ */
+.suggestions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-8);
+  height: var(--suggest-height);
+  background: var(--white);
+  border-bottom: 1px solid var(--slate-050);
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+.suggestions::-webkit-scrollbar { display: none; }
+.suggestion-label {
+  font-size: var(--text-xs);
+  color: var(--slate-500);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.suggestion-chip {
+  padding: 3px 12px;
+  border-radius: 100px;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--cerulean-500);
+  background: var(--cerulean-050);
+  border: 1px solid var(--cerulean-100);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.12s;
+}
+.suggestion-chip:hover { background: var(--cerulean-100); }
+
+/* ============================================================
+   SCROLLABLE CONTENT AREA
+============================================================ */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-8);
+  scrollbar-width: thin;
+  scrollbar-color: var(--slate-100) transparent;
+}
+.content::-webkit-scrollbar { width: 5px; }
+.content::-webkit-scrollbar-track { background: transparent; }
+.content::-webkit-scrollbar-thumb { background: var(--slate-100); border-radius: 10px; }
+
+/* ============================================================
+   PAGE HEADER
+============================================================ */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+  gap: var(--space-4);
+}
+.page-title {
+  font-family: var(--font-body);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--navy-900);
+  line-height: 1.2;
+}
+.page-meta {
+  font-size: var(--text-xs);
+  color: var(--slate-500);
+  margin-top: 4px;
+  font-family: var(--font-mono);
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   PERIOD TABS (reusable in headers)
+============================================================ */
+.period-tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--slate-050);
+  border-radius: var(--radius-md);
+  padding: 3px;
+}
+.period-tab {
+  padding: 4px 12px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--slate-500);
+  border: none;
+  background: transparent;
+  transition: all 0.12s;
+  font-family: var(--font-body);
+}
+.period-tab.active {
+  background: var(--white);
+  color: var(--navy-900);
+  box-shadow: 0 1px 3px rgba(13,27,46,0.10);
+}
