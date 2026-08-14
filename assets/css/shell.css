@@ -124,8 +124,10 @@ body {
   border: 1px solid rgba(217,125,15,0.22);
   margin-top: var(--space-4);
   transition: background 0.12s;
+  text-decoration: none;
 }
 .nav-ai-item:hover { background: rgba(217,125,15,0.18); }
+.nav-ai-item.active { background: rgba(217,125,15,0.24); border-color: rgba(217,125,15,0.4); }
 
 /* Sidebar footer / user */
 .sidebar-footer {

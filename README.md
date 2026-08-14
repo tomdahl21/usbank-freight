@@ -23,6 +23,7 @@ This is a collaborative static HTML prototype for the US Bank Freight Payment An
 | Carrier Performance | `pages/carrier-performance.html` | Carrier OTIF scorecards and lane-level detail | ✅ Built |
 | Shipment Status | `pages/shipment-status.html` | Active shipment tracking with milestone steps | ✅ Built |
 | Exceptions | `pages/exceptions.html` | Exception queue and triage workflow | ✅ Built |
+| AI Assistant | `pages/ai-assistant.html` | Conversational chat — daily digest, PO lookup, cost-leak finder | ✅ Built |
 
 ---
 

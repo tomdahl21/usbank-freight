@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Assistant — US Bank Freight Analytics</title>
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/shell.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<style>
+  /* AI Assistant page — page-specific layout */
+  .content.assistant-content {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+  }
+  .assistant-page-header {
+    padding: var(--space-6) var(--space-8) 0;
+  }
+
+  .chat-body { flex: 1; display: flex; overflow: hidden; min-height: 0; }
+  .chat-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+  .chat-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-6) var(--space-8) var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    scrollbar-width: thin;
+    scrollbar-color: var(--slate-100) transparent;
+  }
+  .chat-scroll::-webkit-scrollbar { width: 5px; }
+  .chat-scroll::-webkit-scrollbar-thumb { background: var(--slate-100); border-radius: 10px; }
+
+  .chat-day-divider {
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--slate-500);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .msg { display: flex; gap: var(--space-3); max-width: 720px; }
+  .msg.ai { align-self: flex-start; }
+  .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+
+  .msg-avatar {
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: var(--text-sm); font-weight: 700;
+  }
+  .msg.ai .msg-avatar { background: var(--amber-500); color: var(--white); }
+  .msg.user .msg-avatar { background: var(--cerulean-500); color: var(--white); }
+
+  .msg-col { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .msg.user .msg-col { align-items: flex-end; }
+
+  .msg-meta { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-xs); color: var(--slate-500); }
+  .msg-meta .who { font-weight: 600; color: var(--navy-900); }
+
+  .msg-bubble {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    border-top-left-radius: 4px;
+    padding: var(--space-4) var(--space-5);
+    box-shadow: var(--shadow-card);
+    font-size: var(--text-sm);
+    color: var(--slate-700);
+    line-height: 1.65;
+    max-width: 560px;
+  }
+  .msg.user .msg-bubble {
+    background: var(--navy-900);
+    color: var(--white);
+    border-radius: var(--radius-lg);
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: 4px;
+  }
+  .msg-bubble p + p { margin-top: var(--space-3); }
+  .msg-bubble strong { color: var(--navy-900); font-weight: 600; }
+  .msg.user .msg-bubble strong { color: var(--white); }
+
+  /* Rich response cards embedded in AI bubbles */
+  .resp-card {
+    margin-top: var(--space-4);
+    background: var(--off-white);
+    border: 1px solid var(--slate-100);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .resp-card-header {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: var(--seam);
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .resp-card-title { font-size: var(--text-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--navy-900); }
+  .resp-card-body { padding: var(--space-4); }
+
+  .digest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
+  .digest-stat {
+    background: var(--white); border: 1px solid var(--slate-100); border-radius: var(--radius-sm);
+    padding: var(--space-3); text-align: center;
+  }
+  .digest-stat .d-label { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--slate-500); margin-bottom: 4px; }
+  .digest-stat .d-value { font-family: var(--font-mono); font-size: var(--text-lg); font-weight: 500; color: var(--navy-900); }
+  .digest-stat.good .d-value { color: var(--success-500); }
+  .digest-stat.warn .d-value { color: var(--amber-500); }
+  .digest-stat.bad .d-value { color: var(--danger-500); }
+
+  .kv-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--space-2) 0; border-bottom: 1px solid var(--slate-100); font-size: var(--text-xs);
+  }
+  .kv-row:last-child { border-bottom: none; }
+  .kv-row .k { color: var(--slate-500); }
+  .kv-row .v { font-family: var(--font-mono); color: var(--navy-900); font-weight: 500; text-align: right; }
+
+  .rank-list { display: flex; flex-direction: column; gap: var(--space-2); }
+  .rank-row {
+    display: flex; align-items: center; gap: var(--space-3);
+    background: var(--white); border: 1px solid var(--slate-100); border-radius: var(--radius-sm);
+    padding: var(--space-2) var(--space-3);
+  }
+  .rank-num {
+    width: 20px; height: 20px; border-radius: 50%; background: var(--navy-900); color: var(--white);
+    font-family: var(--font-mono); font-size: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .rank-label { flex: 1; font-size: var(--text-xs); color: var(--slate-700); }
+  .rank-label strong { color: var(--navy-900); }
+  .rank-amount { font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 600; color: var(--danger-500); flex-shrink: 0; }
+
+  .resp-card-actions { display: flex; gap: var(--space-2); margin-top: var(--space-4); flex-wrap: wrap; }
+
+  .inline-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    color: var(--amber-500); background: var(--amber-050); border: 1px solid var(--amber-200);
+    padding: 2px 8px; border-radius: 100px; margin-top: var(--space-2);
+  }
+
+  /* Composer */
+  .chat-composer { flex-shrink: 0; border-top: 1px solid var(--slate-100); background: var(--white); }
+  .chat-composer-suggestions {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-3) var(--space-8) 0;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .chat-composer-suggestions::-webkit-scrollbar { display: none; }
+  .composer-bar-wrap { padding: var(--space-4) var(--space-8) var(--space-6); }
+  .composer-hint { font-size: 10px; color: var(--slate-300); text-align: center; margin-top: var(--space-2); font-family: var(--font-mono); }
+
+  /* Right rail — capability menu */
+  .chat-rail {
+    width: 320px;
+    flex-shrink: 0;
+    border-left: 1px solid var(--slate-100);
+    background: var(--white);
+    overflow-y: auto;
+    padding: var(--space-6) var(--space-5);
+  }
+  .rail-heading {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--slate-500);
+    margin-bottom: var(--space-4);
+  }
+  .rail-section { margin-bottom: var(--space-6); }
+  .rail-section:last-child { margin-bottom: 0; }
+  .rail-section-title { font-size: var(--text-sm); font-weight: 700; color: var(--navy-900); margin-bottom: var(--space-3); }
+
+  .capability-item {
+    display: flex; align-items: flex-start; gap: var(--space-3);
+    padding: var(--space-3); border-radius: var(--radius-md);
+    cursor: pointer; transition: background 0.12s; margin-bottom: 4px;
+    border: 1px solid transparent;
+  }
+  .capability-item:hover { background: var(--cerulean-050); border-color: var(--cerulean-100); }
+  .capability-icon {
+    width: 28px; height: 28px; border-radius: var(--radius-sm); flex-shrink: 0;
+    background: var(--cerulean-050); color: var(--cerulean-500);
+    display: flex; align-items: center; justify-content: center; font-size: var(--text-sm);
+  }
+  .capability-item.live .capability-icon { background: var(--success-100); color: var(--success-500); }
+  .capability-item.soon .capability-icon { background: var(--amber-050); color: var(--amber-500); }
+  .capability-name { font-size: var(--text-xs); font-weight: 600; color: var(--navy-900); display: flex; align-items: center; gap: 6px; }
+  .capability-desc { font-size: 11px; color: var(--slate-500); margin-top: 2px; line-height: 1.4; }
+  .status-pill {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.04em; padding: 1px 6px; border-radius: 100px;
+  }
+  .status-pill.live { background: var(--success-100); color: var(--success-500); }
+  .status-pill.soon { background: var(--amber-200); color: var(--amber-500); }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <aside class="sidebar">
+    <div class="sidebar-logo-area">
+      <img src="../assets/img/logo-white.svg" alt="US Bank">
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-label">Overview</div>
+      <a class="nav-item" href="../index.html">
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="1" width="5.5" height="5.5" rx="1" fill="currentColor"/><rect x="8.5" y="1" width="5.5" height="5.5" rx="1" fill="currentColor"/><rect x="1" y="8.5" width="5.5" height="5.5" rx="1" fill="currentColor"/><rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1" fill="currentColor"/></svg></span>
+        Dashboard
+      </a>
+      <a class="nav-item" href="invoices.html">
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="2" width="13" height="1.5" rx=".75" fill="currentColor"/><rect x="1" y="6.75" width="13" height="1.5" rx=".75" fill="currentColor"/><rect x="1" y="11.5" width="9" height="1.5" rx=".75" fill="currentColor"/></svg></span>
+        Invoices
+      </a>
+      <a class="nav-item" href="shipment-status.html">
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.5"/><path d="M7.5 4v3.5l2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        Shipment Status
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="3" width="13" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M5 3V2m5 1V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        Payments
+      </a>
+
+      <div class="nav-group-label">Analytics</div>
+      <a class="nav-item" href="#">
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M1 11.5L5.5 7l3 3L14 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        Spend Analysis
+      </a>
+      <a class="nav-item" href="carrier-performance.html">
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1.5v12M1.5 7.5h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="7.5" cy="7.5" r="3" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        Carrier Performance
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 7.5h11M9.5 4l3.5 3.5L9.5 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        Lane Intelligence
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1" y="8" width="3" height="5" rx=".5" fill="currentColor"/><rect x="6" y="5" width="3" height="8" rx=".5" fill="currentColor"/><rect x="11" y="2" width="3" height="11" rx=".5" fill="currentColor"/></svg></span>
+        Benchmarks
+      </a>
+
+      <div class="nav-group-label">Finance</div>
+      <a class="nav-item" href="exceptions.html">
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1a6.5 6.5 0 100 13A6.5 6.5 0 007.5 1zm0 2.5v4l3 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        Exceptions
+      </a>
+      <a class="nav-item" href="#">
+        <span class="nav-item-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 4h11M2 7.5h8M2 11h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        Reconciliation
+      </a>
+
+      <a class="nav-ai-item active" href="ai-assistant.html">
+        <span>✦</span> Ask AI
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-row">
+        <div class="user-avatar">MR</div>
+        <div>
+          <div class="user-name">Marcus Rodriguez</div>
+          <div class="user-role">Freight Manager</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ==================== MAIN ==================== -->
+  <div class="main">
+
+    <div class="topbar">
+      <div class="ai-query-bar">
+        <span class="ai-query-icon">✦</span>
+        <input class="ai-query-input" type="text" placeholder="Ask about a PO, carrier, lane, or invoice — e.g., 'Check on PO 90142-C'" />
+        <button class="btn btn-ai btn-sm">Ask</button>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-icon-btn">🔔<span class="notif-dot"></span></div>
+        <div class="topbar-icon-btn">⚙</div>
+      </div>
+    </div>
+
+    <div class="suggestions">
+      <span class="suggestion-label">Suggested:</span>
+      <span class="suggestion-chip">Which carriers are missing OTIF targets?</span>
+      <span class="suggestion-chip">Show late shipments from Chicago last week</span>
+      <span class="suggestion-chip">FedEx vs XPO transit time on southeast lanes</span>
+      <span class="suggestion-chip">Draft a dispute for PO 90142-C</span>
+      <span class="suggestion-chip">Unpaid invoices older than 30 days</span>
+    </div>
+
+    <div class="content assistant-content">
+
+      <div class="page-header assistant-page-header">
+        <div>
+          <div class="page-title">AI Assistant</div>
+          <div class="page-meta">Grounded in your live freight, invoice &amp; BOL data · Aug 14, 2026</div>
+        </div>
+      </div>
+
+      <div class="chat-body">
+
+        <!-- ================= CHAT MAIN ================= -->
+        <div class="chat-main">
+          <div class="chat-scroll">
+
+            <div class="chat-day-divider">Today · 7:02 AM</div>
+
+            <!-- Daily digest, pushed proactively -->
+            <div class="msg ai">
+              <div class="msg-avatar">✦</div>
+              <div class="msg-col">
+                <div class="msg-meta"><span class="who">Freight Assistant</span> · 7:02 AM</div>
+                <div class="msg-bubble">
+                  <p>Good morning, Marcus. Here's your daily briefing for <strong>Aug 14</strong>.</p>
+
+                  <div class="resp-card">
+                    <div class="resp-card-header">
+                      <span class="resp-card-title">Daily Digest</span>
+                      <span class="badge badge-navy">3 items need attention</span>
+                    </div>
+                    <div class="resp-card-body">
+                      <div class="digest-grid">
+                        <div class="digest-stat good"><div class="d-label">OTIF (24h)</div><div class="d-value">94.2%</div></div>
+                        <div class="digest-stat warn"><div class="d-label">Open Exceptions</div><div class="d-value">37</div></div>
+                        <div class="digest-stat good"><div class="d-label">Audit Recovery</div><div class="d-value">$284K</div></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p style="margin-top:var(--space-4);"><strong>Where problems lie:</strong> FedEx Freight is at 81.4% OTIF on Dallas → Nashville (8.6 pts under target) — 3 late pickups this week traced to Monday congestion at their ORD terminal. Chicago → Atlanta OTIF has slipped 6.2 pts over 3 weeks, same carrier.</p>
+                  <p><strong>Where savings are happening:</strong> Audit rules caught <strong>$284K</strong> in BOL-to-invoice discrepancies this quarter — mostly freight class mismatches on LTL shipments. Switching your two underperforming Chicago → Atlanta lanes to Old Dominion or XPO would recover an estimated <strong>$41K/year</strong> in transit-time-driven detention costs.</p>
+                  <div class="resp-card-actions">
+                    <button class="btn btn-ai btn-sm">✦ Show carrier alternatives</button>
+                    <a href="exceptions.html" class="btn btn-ghost btn-sm">View full exception list</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- User asks about a PO -->
+            <div class="msg user">
+              <div class="msg-avatar">MR</div>
+              <div class="msg-col">
+                <div class="msg-meta">7:14 AM</div>
+                <div class="msg-bubble">What's the status of PO 90142-C? A plant manager is asking me about it.</div>
+              </div>
+            </div>
+
+            <!-- AI PO summary -->
+            <div class="msg ai">
+              <div class="msg-avatar">✦</div>
+              <div class="msg-col">
+                <div class="msg-meta"><span class="who">Freight Assistant</span> · 7:14 AM</div>
+                <div class="msg-bubble">
+                  <p><strong>PO 90142-C</strong> shipped on SAIA LTL and is currently flagged as an exception — here's the contextual summary:</p>
+                  <div class="resp-card">
+                    <div class="resp-card-header">
+                      <span class="resp-card-title">Shipment Summary</span>
+                      <span class="badge badge-danger">Short · Exception</span>
+                    </div>
+                    <div class="resp-card-body">
+                      <div class="kv-row"><span class="k">Invoice / PRO</span><span class="v">INV-2026-00041654 · PRO 9914-22019</span></div>
+                      <div class="kv-row"><span class="k">Carrier / Mode</span><span class="v">SAIA LTL Freight · LTL</span></div>
+                      <div class="kv-row"><span class="k">Lane</span><span class="v">Dallas, TX → Nashville, TN</span></div>
+                      <div class="kv-row"><span class="k">Freight Class (BOL vs. Billed)</span><span class="v">Class 92.5 → Class 92.5 ✓</span></div>
+                      <div class="kv-row"><span class="k">Billed Amount</span><span class="v">$1,441.75</span></div>
+                      <div class="kv-row"><span class="k">Delivery</span><span class="v">Arrived short — 2 of 3 pallets, 1 day late</span></div>
+                    </div>
+                  </div>
+                  <p style="margin-top:var(--space-4);">This lane is also the one flagged in this morning's digest — FedEx Freight and carrier congestion are driving the broader OTIF miss here. I've drafted a dispute for the short delivery if you'd like to send it to SAIA.</p>
+                  <div class="resp-card-actions">
+                    <button class="btn btn-ai btn-sm">✦ Draft carrier dispute</button>
+                    <a href="invoices.html" class="btn btn-ghost btn-sm">Open invoice detail</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- User asks about savings / policy cost -->
+            <div class="msg user">
+              <div class="msg-avatar">MR</div>
+              <div class="msg-col">
+                <div class="msg-meta">7:22 AM</div>
+                <div class="msg-bubble">Where are we losing the most money right now, and how much is our free-shipping-over-$100 policy costing us?</div>
+              </div>
+            </div>
+
+            <div class="msg ai">
+              <div class="msg-avatar">✦</div>
+              <div class="msg-col">
+                <div class="msg-meta"><span class="who">Freight Assistant</span> · 7:23 AM</div>
+                <div class="msg-bubble">
+                  <p>Here's where the biggest cost leaks are this month, ranked by dollar impact:</p>
+                  <div class="resp-card">
+                    <div class="resp-card-header"><span class="resp-card-title">Top Cost Leaks — Last 30 Days</span></div>
+                    <div class="resp-card-body">
+                      <div class="rank-list">
+                        <div class="rank-row"><div class="rank-num">1</div><div class="rank-label"><strong>Free-shipping-over-$100 policy</strong> — orders that would've cleared a $100+ threshold anyway</div><div class="rank-amount">$96,400</div></div>
+                        <div class="rank-row"><div class="rank-num">2</div><div class="rank-label"><strong>Freight class mismatches</strong> — billed vs. BOL-declared class, mostly UPS Freight LTL</div><div class="rank-amount">$41,200</div></div>
+                        <div class="rank-row"><div class="rank-num">3</div><div class="rank-label"><strong>Detention &amp; late-pickup fees</strong> — concentrated on FedEx Freight, Chicago origin</div><div class="rank-amount">$18,900</div></div>
+                        <div class="rank-row"><div class="rank-num">4</div><div class="rank-label"><strong>Accessorial overbilling</strong> — liftgate charged but not requested on BOL</div><div class="rank-amount">$7,650</div></div>
+                      </div>
+                    </div>
+                  </div>
+                  <p style="margin-top:var(--space-4);">Your free-shipping policy cost <strong>$96,400</strong> this month — 22% of qualifying orders were under 5 lbs and could have shipped standard-rate without triggering the promise. I can pull the SKU list driving this if useful.</p>
+                  <span class="inline-chip">✦ Policy cost analysis</span>
+                  <div class="resp-card-actions">
+                    <button class="btn btn-ai btn-sm">✦ Break down by SKU</button>
+                    <button class="btn btn-ghost btn-sm">Export as report</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ================= COMPOSER ================= -->
+          <div class="chat-composer">
+            <div class="chat-composer-suggestions">
+              <span class="suggestion-chip">Which carriers are missing OTIF targets?</span>
+              <span class="suggestion-chip">Show late shipments from Chicago last week</span>
+              <span class="suggestion-chip">FedEx vs XPO transit time on southeast lanes</span>
+              <span class="suggestion-chip">Draft a dispute for PO 90142-C</span>
+              <span class="suggestion-chip">Unpaid invoices older than 30 days</span>
+            </div>
+            <div class="composer-bar-wrap">
+              <div class="ai-query-bar" style="max-width:none;">
+                <span class="ai-query-icon">✦</span>
+                <input class="ai-query-input" type="text" placeholder="Ask about a PO, carrier, lane, or invoice — e.g., 'Check on PO 90142-C'" />
+                <button class="btn btn-ai btn-sm">Ask</button>
+              </div>
+              <div class="composer-hint">AI responses are generated from your live freight data and clearly labeled. Payment actions always require your confirmation.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= RIGHT RAIL: CAPABILITIES ================= -->
+        <div class="chat-rail">
+          <div class="rail-heading">What the Assistant Can Do</div>
+
+          <div class="rail-section">
+            <div class="rail-section-title">Available now</div>
+
+            <div class="capability-item live">
+              <div class="capability-icon">☀</div>
+              <div>
+                <div class="capability-name">Daily &amp; Weekly Digest <span class="status-pill live">Live</span></div>
+                <div class="capability-desc">Proactive morning briefing on OTIF, exceptions, and savings — no query needed.</div>
+              </div>
+            </div>
+
+            <div class="capability-item live">
+              <div class="capability-icon">🔎</div>
+              <div>
+                <div class="capability-name">PO / Shipment Lookup <span class="status-pill live">Live</span></div>
+                <div class="capability-desc">Ask about any PO, PRO, or invoice number for a contextual status summary.</div>
+              </div>
+            </div>
+
+            <div class="capability-item live">
+              <div class="capability-icon">💰</div>
+              <div>
+                <div class="capability-name">Cost Leak Finder <span class="status-pill live">Live</span></div>
+                <div class="capability-desc">Ranks where money is being lost — overcharges, detention, policy cost.</div>
+              </div>
+            </div>
+
+            <div class="capability-item live">
+              <div class="capability-icon">🚚</div>
+              <div>
+                <div class="capability-name">Carrier &amp; Lane Comparison <span class="status-pill live">Live</span></div>
+                <div class="capability-desc">Transit time and OTIF side-by-side across carriers for any lane.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rail-section">
+            <div class="rail-section-title">On the roadmap</div>
+
+            <div class="capability-item soon">
+              <div class="capability-icon">⚠</div>
+              <div>
+                <div class="capability-name">Carrier Risk Radar <span class="status-pill soon">Next</span></div>
+                <div class="capability-desc">Flags carriers trending toward an OTIF or capacity problem before it hits your lanes.</div>
+              </div>
+            </div>
+
+            <div class="capability-item soon">
+              <div class="capability-icon">📝</div>
+              <div>
+                <div class="capability-name">Dispute Drafting</div>
+                <div class="capability-desc">Auto-drafts carrier dispute emails from BOL discrepancies, ready to send.</div>
+              </div>
+            </div>
+
+            <div class="capability-item soon">
+              <div class="capability-icon">🌩</div>
+              <div>
+                <div class="capability-name">Weather &amp; Disruption Impact</div>
+                <div class="capability-desc">Flags in-transit shipments exposed to storms, port delays, or terminal congestion.</div>
+              </div>
+            </div>
+
+            <div class="capability-item soon">
+              <div class="capability-icon">📄</div>
+              <div>
+                <div class="capability-name">Contract Renewal Prep</div>
+                <div class="capability-desc">One-click briefing of a carrier's performance and rate history before a renegotiation.</div>
+              </div>
+            </div>
+
+            <div class="capability-item soon">
+              <div class="capability-icon">📊</div>
+              <div>
+                <div class="capability-name">Peer Benchmark Explainer</div>
+                <div class="capability-desc">Plain-language "why" behind how your program compares to industry peers.</div>
+              </div>
+            </div>
+
+            <div class="capability-item soon">
+              <div class="capability-icon">🎙</div>
+              <div>
+                <div class="capability-name">Voice Morning Briefing</div>
+                <div class="capability-desc">Hands-free audio digest for the commute — mobile v2.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- /chat-body -->
+
+    </div>
+    <!-- /content -->
+
+  </div>
+  <!-- /main -->
+
+</div>
+<!-- /app -->
+
+</body>
+</html>
