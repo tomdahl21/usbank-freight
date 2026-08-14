@@ -11,8 +11,8 @@
   /* Three-column split layout */
   .cp-layout { display: flex; height: calc(100vh - var(--topbar-height) - var(--suggest-height)); overflow: hidden; }
   .carrier-list-panel { width: 260px; flex-shrink: 0; background: var(--white); border-right: 1px solid var(--slate-100); overflow-y: auto; }
-  .cp-layout-content { display: flex; flex: 1; overflow: hidden; }
-  .carrier-detail-panel { flex: 1; overflow-y: auto; padding: var(--space-8); scrollbar-width: thin; }
+  .cp-layout-content { display: flex; flex: 1 1 auto; min-width: 0; overflow: hidden; }
+  .carrier-detail-panel { flex: 1 1 auto; overflow-y: auto; padding: var(--space-8); scrollbar-width: thin; min-width: 0; }
   .cp-detail-wrapper { display: contents; }
 
   /* KPI tile row */
@@ -101,8 +101,8 @@
   .ttl-actions { display: flex; gap: var(--space-2); margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--slate-100); }
 
   /* Alternatives Sidebar */
-  .cp-alternatives-panel { display: none; width: 0; flex-shrink: 0; background: var(--slate-050); border-left: 1px solid var(--slate-200); overflow-y: auto; transition: width 0.2s ease; flex-direction: column; }
-  .cp-alternatives-panel.open { display: flex; width: 320px; }
+  .cp-alternatives-panel { display: flex; width: 0; flex-basis: 0; flex-shrink: 0; background: var(--slate-050); border-left: 1px solid var(--slate-200); overflow-y: auto; transition: width 0.2s ease, flex-basis 0.2s ease; flex-direction: column; visibility: hidden; }
+  .cp-alternatives-panel.open { width: 320px; flex-basis: 320px; visibility: visible; }
   .cp-alt-header { padding: var(--space-5) var(--space-4); border-bottom: 1px solid var(--slate-200); font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--slate-600); flex-shrink: 0; }
   .cp-alt-content { padding: var(--space-5) var(--space-4); overflow-y: auto; flex: 1; }
   .cp-alt-section { margin-bottom: var(--space-6); }
@@ -300,416 +300,397 @@
 
       <!-- ===== CENTER: Carrier Detail Panel + RIGHT: Alternatives Sidebar ===== -->
       <div class="cp-layout-content">
-        
-        <!-- Carrier Detail Panel (Main Content) -->
         <div class="carrier-detail-panel">
           <div class="cp-detail-wrapper">
-
-        <!-- 1. Carrier Header + KPI Tiles -->
-        <div class="carrier-detail-header">
-          <div class="carrier-detail-name">FedEx Freight</div>
-          <span class="badge badge-navy">LTL</span>
-          <div class="carrier-detail-header-right">
-            <div class="period-tabs">
-              <button class="period-tab">4W</button>
-              <button class="period-tab active">30 days</button>
-              <button class="period-tab">90 days</button>
-              <button class="period-tab">YTD</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="kpi-row section-gap">
-          <div class="kpi-tile">
-            <div class="kpi-label">OTIF Rate</div>
-            <div class="kpi-value amber">85.6%</div>
-          </div>
-          <div class="kpi-tile">
-            <div class="kpi-label">Avg Transit</div>
-            <div class="kpi-value">2.8 days</div>
-          </div>
-          <div class="kpi-tile">
-            <div class="kpi-label">Invoice Accuracy</div>
-            <div class="kpi-value">96.2%</div>
-          </div>
-        </div>
-
-        <!-- NEW: Payment Status KPI Row -->
-        <div class="payment-status-row section-gap">
-          <div class="payment-status-tile ps-paid">
-            <div class="ps-label">Paid</div>
-            <div class="ps-amount">$42.3K</div>
-            <div class="ps-count">156 invoices</div>
-          </div>
-          <div class="payment-status-tile ps-pending">
-            <div class="ps-label">Pending Audit</div>
-            <div class="ps-amount">$12.1K</div>
-            <div class="ps-count">42 invoices</div>
-          </div>
-          <div class="payment-status-tile ps-disputed">
-            <div class="ps-label">Disputed</div>
-            <div class="ps-amount">$3.8K</div>
-            <div class="ps-count">14 invoices</div>
-          </div>
-          <div class="payment-status-tile ps-outstanding">
-            <div class="ps-label">Outstanding</div>
-            <div class="ps-amount">$18.3K</div>
-            <div class="ps-count">64 invoices</div>
-          </div>
-        </div>
-
-        <!-- 2. Alert Strip -->
-        <div class="alert-strip warning section-gap">
-          <span class="alert-icon">⚠</span>
-          <div class="alert-body">
-            <strong>FedEx Freight is 8.6 pts below your 90% OTIF target on the Dallas → Nashville lane.</strong>
-            This has persisted for 3 weeks.
-          </div>
-        </div>
-
-        <!-- NEW: Time-to-Location Comparison Card -->
-        <div class="ttl-card">
-          <div class="ttl-header">⏱ Time-to-Location Comparison</div>
-          <div class="ttl-subtitle">Dallas → Nashville (Last 30 days) — Tap a carrier to view alternatives</div>
-          
-          <div class="ttl-carrier-row">
-            <div class="ttl-carrier-name">Old Dominion</div>
-            <div class="ttl-transit">
-              <div class="ttl-transit-val">2.3d</div>
-              <div class="ttl-transit-label">avg transit</div>
-            </div>
-            <div class="ttl-otif">
-              <div class="ttl-otif-val good">93.2%</div>
-              <div class="ttl-transit-label">OTIF</div>
-            </div>
-            <div class="ttl-cost">
-              <div class="ttl-cost-val">$2.18/lb</div>
-            </div>
-          </div>
-
-          <div class="ttl-carrier-row" style="background: var(--amber-050); padding: var(--space-3) 0; margin: 0 calc(var(--space-3) * -1); padding: var(--space-3) var(--space-3);">
-            <div class="ttl-carrier-name">FedEx Freight (current)</div>
-            <div class="ttl-transit">
-              <div class="ttl-transit-val">2.8d</div>
-              <div class="ttl-transit-label">avg transit</div>
-            </div>
-            <div class="ttl-otif">
-              <div class="ttl-otif-val warn">85.6%</div>
-              <div class="ttl-transit-label">OTIF</div>
-            </div>
-            <div class="ttl-cost">
-              <div class="ttl-cost-val">$2.09/lb</div>
-            </div>
-          </div>
-
-          <div class="ttl-carrier-row">
-            <div class="ttl-carrier-name">SAIA LTL</div>
-            <div class="ttl-transit">
-              <div class="ttl-transit-val">2.5d</div>
-              <div class="ttl-transit-label">avg transit</div>
-            </div>
-            <div class="ttl-otif">
-              <div class="ttl-otif-val good">93.2%</div>
-              <div class="ttl-transit-label">OTIF</div>
-            </div>
-            <div class="ttl-cost">
-              <div class="ttl-cost-val">$2.24/lb</div>
-            </div>
-          </div>
-
-          <div class="ttl-carrier-row">
-            <div class="ttl-carrier-name">Estes Express</div>
-            <div class="ttl-transit">
-              <div class="ttl-transit-val">2.9d</div>
-              <div class="ttl-transit-label">avg transit</div>
-            </div>
-            <div class="ttl-otif">
-              <div class="ttl-otif-val warn">89.1%</div>
-              <div class="ttl-transit-label">OTIF</div>
-            </div>
-            <div class="ttl-cost">
-              <div class="ttl-cost-val">$2.03/lb</div>
-            </div>
-          </div>
-
-          <div class="ttl-actions">
-            <button class="btn btn-ghost btn-sm">↓ More details</button>
-            <button class="btn btn-ghost btn-sm">Compare Mode</button>
-            <button class="btn btn-ai btn-sm">✦ Show alternatives</button>
-          </div>
-        </div>
-
-        <!-- 3. OTIF Trend Chart -->
-        <div class="chart-card section-gap">
-          <div class="chart-header">
-            <div>
-              <div class="chart-title">OTIF Trend — Last 12 Weeks</div>
-              <div class="chart-subtitle">FedEx Freight · All lanes · Weekly</div>
-            </div>
-            <div class="chart-actions">
-              <button class="btn btn-ai btn-sm">✦ Explain</button>
-              <button class="btn btn-ghost btn-sm">↓ Export</button>
-            </div>
-          </div>
-          <div class="chart-body">
-            <div class="bar-chart-area">
-              <!-- Weeks May 26 – Aug 11 (12 bars). First 8 cerulean-300, last 4 amber-500 (declining). -->
-              <!-- Heights = OTIF% as % of 100 vertical space. Trend: 91→90.8→90.1→89.6→89.2→88.9→88.5→88.1→87.4→86.8→86.2→85.6 -->
-              <div class="bar-col"><div class="bar" style="height:91%; background:var(--cerulean-300);"></div><div class="bar-label">May 26</div></div>
-              <div class="bar-col"><div class="bar" style="height:90.8%; background:var(--cerulean-300);"></div><div class="bar-label">Jun 2</div></div>
-              <div class="bar-col"><div class="bar" style="height:90.1%; background:var(--cerulean-300);"></div><div class="bar-label">Jun 9</div></div>
-              <div class="bar-col"><div class="bar" style="height:89.6%; background:var(--cerulean-300);"></div><div class="bar-label">Jun 16</div></div>
-              <div class="bar-col"><div class="bar" style="height:89.2%; background:var(--cerulean-300);"></div><div class="bar-label">Jun 23</div></div>
-              <div class="bar-col"><div class="bar" style="height:88.9%; background:var(--cerulean-300);"></div><div class="bar-label">Jun 30</div></div>
-              <div class="bar-col"><div class="bar" style="height:88.5%; background:var(--cerulean-300);"></div><div class="bar-label">Jul 7</div></div>
-              <div class="bar-col"><div class="bar" style="height:88.1%; background:var(--cerulean-300);"></div><div class="bar-label">Jul 14</div></div>
-              <div class="bar-col"><div class="bar" style="height:87.4%; background:var(--amber-500);"></div><div class="bar-label">Jul 21</div></div>
-              <div class="bar-col"><div class="bar" style="height:86.8%; background:var(--amber-500);"></div><div class="bar-label">Jul 28</div></div>
-              <div class="bar-col"><div class="bar" style="height:86.2%; background:var(--amber-500);"></div><div class="bar-label">Aug 4</div></div>
-              <div class="bar-col"><div class="bar" style="height:85.6%; background:var(--amber-500);"></div><div class="bar-label">Aug 11</div></div>
-            </div>
-            <div class="otif-summary-row">
-              <span>12W Avg: <strong>88.4%</strong></span>
-              <span>Target: <strong>90.0%</strong></span>
-              <span>Gap: <strong style="color:var(--red-600,#dc2626);">−4.4 pts</strong></span>
-              <span>Trend: <strong style="color:var(--amber-600,#d97706);">Declining</strong></span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4. OTIF by Lane Table -->
-        <div class="table-card section-gap">
-          <div class="table-header">
-            <div>
-              <div class="chart-title">OTIF by Lane</div>
-              <div class="chart-subtitle">FedEx Freight · Last 30 days</div>
-            </div>
-            <div style="display:flex; gap:var(--space-2);">
-              <button class="btn btn-ghost btn-sm">Filter</button>
-              <button class="btn btn-ghost btn-sm">↓ Export</button>
-            </div>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Lane</th>
-                <th class="td-right">OTIF %</th>
-                <th class="td-right">On-Time</th>
-                <th class="td-right">In Full</th>
-                <th class="td-right">Avg Transit</th>
-                <th class="td-right">vs Target</th>
-                <th style="text-align:center;">Trend</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style="font-size:var(--text-xs); color:var(--slate-600);">Chicago → Atlanta</td>
-                <td class="td-right"><span class="badge badge-success">92.1%</span></td>
-                <td class="td-mono td-right" style="font-size:var(--text-xs);">93.4%</td>
-                <td class="td-mono td-right" style="font-size:var(--text-xs);">98.6%</td>
-                <td class="td-mono td-right" style="font-size:var(--text-xs);">2.1 days</td>
-                <td class="td-right"><span class="vs-target-good">+2.1 pts</span></td>
-                <td style="text-align:center;"><span class="trend-up">↑</span></td>
-              </tr>
-              <tr class="row-error">
-                <td style="font-size:var(--text-xs); color:var(--slate-600);">Dallas → Nashville</td>
-                <td class="td-right"><span class="badge badge-danger">81.4%</span></td>
-                <td class="td-mono td-right" style="font-size:var(--text-xs);">82.3%</td>
-                <td class="td-mono td-right" style="font-size:var(--text-xs);">99.0%</td>
-                <td class="td-mono td-right" style="font-size:var(--text-xs);">3.2 days</td>
-                <td class="td-right"><span class="vs-target-danger">−8.6 pts ⚠</span></td>
-                <td style="text-align:center;"><span class="trend-down">↓</span></td>
-              </tr>
-              <tr class="row-flagged">
-                <td style="font-size:var(--text-xs); color:var(--slate-600);">Memphis → Philadelphia</td>
-                <td class="td-right"><span class="badge badge-amber">87.3%</span></td>
-                <td class="td-mono td-right" style="font-size:var(--text-xs);">88.1%</td>
-                <td class="td-mono td-right" style="font-size:var(--text-xs);">99.2%</td>
-                <td class="td-mono td-right" style="font-size:var(--text-xs);">2.9 days</td>
-                <td class="td-right"><span class="vs-target-warn">−2.7 pts</span></td>
-                <td style="text-align:center;"><span class="trend-down">↓</span></td>
-              </tr>
-              <tr>
-                <td style="font-size:var(--text-xs); color:var(--slate-600);">Chicago → Detroit</td>
-                <td class="td-right"><span class="badge badge-success">94.7%</span></td>
-                <td class="td-mono td-right" style="font-size:var(--text-xs);">95.0%</td>
-                <td class="td-mono td-right" style="font-size:var(--text-xs);">99.7%</td>
-                <td class="td-mono td-right" style="font-size:var(--text-xs);">1.4 days</td>
-                <td class="td-right"><span class="vs-target-good">+4.7 pts</span></td>
-                <td style="text-align:center;"><span class="trend-up">↑</span></td>
-              </tr>
-              <tr class="row-error">
-                <td style="font-size:var(--text-xs); color:var(--slate-600);">Atlanta → Baltimore</td>
-                <td class="td-right"><span class="badge badge-danger">83.2%</span></td>
-                <td class="td-mono td-right" style="font-size:var(--text-xs);">84.1%</td>
-                <td class="td-mono td-right" style="font-size:var(--text-xs);">99.1%</td>
-                <td class="td-mono td-right" style="font-size:var(--text-xs);">2.6 days</td>
-                <td class="td-right"><span class="vs-target-danger">−6.8 pts ⚠</span></td>
-                <td style="text-align:center;"><span class="trend-down">↓</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- 5. BOL Discrepancy Table -->
-        <div class="table-card section-gap">
-          <div class="table-header">
-            <div>
-              <div class="chart-title">BOL Discrepancies — Last 30 Days</div>
-              <div class="chart-subtitle">Invoices where billed amount deviated from BOL-declared specs</div>
-            </div>
-            <div style="display:flex; gap:var(--space-2);">
-              <button class="btn btn-ghost btn-sm">↓ Export</button>
-            </div>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Invoice</th>
-                <th>Lane</th>
-                <th>Type</th>
-                <th>BOL Declared</th>
-                <th>Billed</th>
-                <th class="td-right">Δ Impact</th>
-                <th>Resolution</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="row-flagged">
-                <td class="td-mono" style="font-size:10px;">INV-2026-00041721</td>
-                <td style="font-size:var(--text-xs); color:var(--slate-500);">LA → Denver</td>
-                <td style="font-size:var(--text-xs);">Freight Class Upgrade (70→85)</td>
-                <td class="td-mono" style="font-size:var(--text-xs);">Class 70</td>
-                <td class="td-mono" style="font-size:var(--text-xs);">Class 85</td>
-                <td class="td-right"><span class="delta-danger">+$82.10</span></td>
-                <td><span class="badge badge-amber">Pending Audit</span></td>
-              </tr>
-              <tr class="row-error">
-                <td class="td-mono" style="font-size:10px;">INV-2026-00041519</td>
-                <td style="font-size:var(--text-xs); color:var(--slate-500);">Atlanta → Baltimore</td>
-                <td style="font-size:var(--text-xs);">Weight Discrepancy</td>
-                <td class="td-mono" style="font-size:var(--text-xs);">640 lbs</td>
-                <td class="td-mono" style="font-size:var(--text-xs);">760 lbs</td>
-                <td class="td-right"><span class="delta-danger">+$224.50</span></td>
-                <td><span class="badge badge-danger">Disputed</span></td>
-              </tr>
-              <tr class="row-flagged">
-                <td class="td-mono" style="font-size:10px;">INV-2026-00041190</td>
-                <td style="font-size:var(--text-xs); color:var(--slate-500);">Dallas → Nashville</td>
-                <td style="font-size:var(--text-xs);">Accessorial Added</td>
-                <td class="td-mono" style="font-size:var(--text-xs);">None on BOL</td>
-                <td class="td-mono" style="font-size:var(--text-xs);">Liftgate $75</td>
-                <td class="td-right"><span class="delta-amber">+$75.00</span></td>
-                <td><span class="badge badge-amber">Under Review</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- 6. AI Insight Card -->
-        <div class="ai-card-enhanced">
-          <div class="ai-card-header">
-            <span class="ai-badge">✦ AI Insight</span>
-            <span class="ai-ts">Aug 14, 2026</span>
-          </div>
-
-          <div class="ai-insight-section">
-            <div class="ai-insight-label">📌 Finding</div>
-            <p class="ai-card-text">
-              FedEx Freight's OTIF decline is concentrated on <strong>Monday and Tuesday pickups at the Dallas terminal</strong> — consistent with known congestion at their DFW facility. This pattern has persisted for 3 weeks.
-            </p>
-            <div class="ai-confidence">Based on 42 shipments over 3 weeks. <a class="ai-evidence-link" href="#" onclick="event.preventDefault();">[See the data]</a></div>
-          </div>
-
-          <div class="ai-insight-section">
-            <div class="ai-insight-label">🔄 Alternatives</div>
-            <p class="ai-card-text">
-              Old Dominion and SAIA both cover this lane with <strong>93%+ OTIF</strong> at within 4% of FedEx's rate. Both have consistent Monday pickup performance on Dallas-Nashville routes.
-            </p>
-          </div>
-
-          <div class="ai-insight-section">
-            <div class="ai-insight-label">💡 Recommendation</div>
-            <p class="ai-card-text">
-              <strong>Shift 30% of Dallas → Nashville volume to SAIA as a trial for Q4.</strong> Estimated impact: +2.1 pts OTIF, +1.8% cost premium (~$1,800/month). ROI: Reduced stockouts and better SLA compliance.
-            </p>
-          </div>
-
-          <div class="ai-card-actions">
-            <button class="btn btn-ai btn-sm">✦ Show all alternatives</button>
-            <button class="btn btn-ai btn-sm">✦ Draft reallocation plan</button>
-            <button class="btn btn-ghost btn-sm">Ask follow-up question</button>
-            <button class="btn btn-ghost btn-sm">Dismiss</button>
-          </div>
-        </div>
-
-</div><!-- /ai-card-enhanced -->
-
-          </div><!-- /cp-detail-wrapper -->
-        </div><!-- /carrier-detail-panel -->
-
-        <!-- ===== RIGHT: Alternatives Sidebar ===== -->
-        <div class="cp-alternatives-panel open">
-        <div class="cp-alt-header">
-          <span style="display: flex; align-items: center; gap: 6px;">🎯 Alternatives for Dallas → Nashville</span>
-        </div>
-        <div class="cp-alt-content">
-          <div class="cp-alt-section">
-            <div class="cp-alt-label">Current Lane</div>
-            <div class="cp-alt-item" style="border-left-color: var(--amber-400); background: var(--amber-050);">
-              <div class="cp-alt-item-name">FedEx Freight</div>
-              <div class="cp-alt-item-metric">OTIF: <strong>81.4%</strong> (−8.6 pts)</div>
-              <div class="cp-alt-item-metric">Transit: <strong>3.2 days</strong></div>
-              <div class="cp-alt-item-metric">Cost: <strong>$2.09/lb</strong></div>
-            </div>
-          </div>
-
-          <div class="cp-alt-section">
-            <div class="cp-alt-label">Top Alternatives</div>
-            
-            <div class="cp-alt-item">
-              <div class="cp-alt-item-name">1. Old Dominion</div>
-              <div class="cp-alt-item-metric">OTIF: <strong style="color: var(--green-600);">+7.6 pts</strong> → 93.2%</div>
-              <div class="cp-alt-item-metric">Transit: <strong>−0.5 days</strong> → 2.3d</div>
-              <div class="cp-alt-item-metric">Cost: <strong>+4.3%</strong> → $2.18/lb</div>
-              <div class="cp-alt-item-metric" style="color: var(--slate-500); font-size: var(--text-xs); margin-top: var(--space-2);">Volume on lane: 2,400 units/mo</div>
-              <div class="cp-alt-actions">
-                <button class="btn btn-ghost btn-sm">Details</button>
-                <button class="btn btn-ai btn-sm">Shift</button>
+            <div class="carrier-detail-header">
+              <div class="carrier-detail-name">FedEx Freight</div>
+              <span class="badge badge-navy">LTL</span>
+              <div class="carrier-detail-header-right">
+                <div class="period-tabs">
+                  <button class="period-tab">4W</button>
+                  <button class="period-tab active">30 days</button>
+                  <button class="period-tab">90 days</button>
+                  <button class="period-tab">YTD</button>
+                </div>
               </div>
             </div>
 
-            <div class="cp-alt-item">
-              <div class="cp-alt-item-name">2. SAIA LTL</div>
-              <div class="cp-alt-item-metric">OTIF: <strong style="color: var(--green-600);">+7.6 pts</strong> → 93.2%</div>
-              <div class="cp-alt-item-metric">Transit: <strong>−0.3 days</strong> → 2.5d</div>
-              <div class="cp-alt-item-metric">Cost: <strong>+7.2%</strong> → $2.24/lb</div>
-              <div class="cp-alt-item-metric" style="color: var(--slate-500); font-size: var(--text-xs); margin-top: var(--space-2);">Volume on lane: 800 units/mo</div>
-              <div class="cp-alt-actions">
-                <button class="btn btn-ghost btn-sm">Details</button>
-                <button class="btn btn-ai btn-sm">Shift</button>
+            <div class="kpi-row section-gap">
+              <div class="kpi-tile">
+                <div class="kpi-label">OTIF Rate</div>
+                <div class="kpi-value amber">85.6%</div>
+              </div>
+              <div class="kpi-tile">
+                <div class="kpi-label">Avg Transit</div>
+                <div class="kpi-value">2.8 days</div>
+              </div>
+              <div class="kpi-tile">
+                <div class="kpi-label">Invoice Accuracy</div>
+                <div class="kpi-value">96.2%</div>
               </div>
             </div>
 
-            <div class="cp-alt-item">
-              <div class="cp-alt-item-name">3. Estes Express</div>
-              <div class="cp-alt-item-metric">OTIF: <strong style="color: var(--amber-600);">+3.5 pts</strong> → 89.1%</div>
-              <div class="cp-alt-item-metric">Transit: <strong>+0.1 days</strong> → 2.9d</div>
-              <div class="cp-alt-item-metric">Cost: <strong>−2.9%</strong> → $2.03/lb ✓</div>
-              <div class="cp-alt-item-metric" style="color: var(--slate-500); font-size: var(--text-xs); margin-top: var(--space-2);">Lowest cost option</div>
-              <div class="cp-alt-actions">
-                <button class="btn btn-ghost btn-sm">Details</button>
-                <button class="btn btn-ai btn-sm">Shift</button>
+            <div class="payment-status-row section-gap">
+              <div class="payment-status-tile ps-paid">
+                <div class="ps-label">Paid</div>
+                <div class="ps-amount">$42.3K</div>
+                <div class="ps-count">156 invoices</div>
+              </div>
+              <div class="payment-status-tile ps-pending">
+                <div class="ps-label">Pending Audit</div>
+                <div class="ps-amount">$12.1K</div>
+                <div class="ps-count">42 invoices</div>
+              </div>
+              <div class="payment-status-tile ps-disputed">
+                <div class="ps-label">Disputed</div>
+                <div class="ps-amount">$3.8K</div>
+                <div class="ps-count">14 invoices</div>
+              </div>
+              <div class="payment-status-tile ps-outstanding">
+                <div class="ps-label">Outstanding</div>
+                <div class="ps-amount">$18.3K</div>
+                <div class="ps-count">64 invoices</div>
               </div>
             </div>
-          </div>
 
-          <div class="cp-alt-section" style="padding-top: var(--space-4); border-top: 1px solid var(--slate-300); margin-top: var(--space-4);">
-            <button class="btn btn-ai btn-sm" style="width: 100%;">✦ Get AI recommendation</button>
+            <div class="alert-strip warning section-gap">
+              <span class="alert-icon">⚠</span>
+              <div class="alert-body">
+                <strong>FedEx Freight is 8.6 pts below your 90% OTIF target on the Dallas → Nashville lane.</strong>
+                This has persisted for 3 weeks.
+              </div>
+            </div>
+
+            <div class="ttl-card">
+              <div class="ttl-header">⏱ Time-to-Location Comparison</div>
+              <div class="ttl-subtitle">Dallas → Nashville (Last 30 days) — Tap a carrier to view alternatives</div>
+
+              <div class="ttl-carrier-row">
+                <div class="ttl-carrier-name">Old Dominion</div>
+                <div class="ttl-transit">
+                  <div class="ttl-transit-val">2.3d</div>
+                  <div class="ttl-transit-label">avg transit</div>
+                </div>
+                <div class="ttl-otif">
+                  <div class="ttl-otif-val good">93.2%</div>
+                  <div class="ttl-transit-label">OTIF</div>
+                </div>
+                <div class="ttl-cost">
+                  <div class="ttl-cost-val">$2.18/lb</div>
+                </div>
+              </div>
+
+              <div class="ttl-carrier-row" style="background: var(--amber-050); padding: var(--space-3) 0; margin: 0 calc(var(--space-3) * -1); padding: var(--space-3) var(--space-3);">
+                <div class="ttl-carrier-name">FedEx Freight (current)</div>
+                <div class="ttl-transit">
+                  <div class="ttl-transit-val">2.8d</div>
+                  <div class="ttl-transit-label">avg transit</div>
+                </div>
+                <div class="ttl-otif">
+                  <div class="ttl-otif-val warn">85.6%</div>
+                  <div class="ttl-transit-label">OTIF</div>
+                </div>
+                <div class="ttl-cost">
+                  <div class="ttl-cost-val">$2.09/lb</div>
+                </div>
+              </div>
+
+              <div class="ttl-carrier-row">
+                <div class="ttl-carrier-name">SAIA LTL</div>
+                <div class="ttl-transit">
+                  <div class="ttl-transit-val">2.5d</div>
+                  <div class="ttl-transit-label">avg transit</div>
+                </div>
+                <div class="ttl-otif">
+                  <div class="ttl-otif-val good">93.2%</div>
+                  <div class="ttl-transit-label">OTIF</div>
+                </div>
+                <div class="ttl-cost">
+                  <div class="ttl-cost-val">$2.24/lb</div>
+                </div>
+              </div>
+
+              <div class="ttl-carrier-row">
+                <div class="ttl-carrier-name">Estes Express</div>
+                <div class="ttl-transit">
+                  <div class="ttl-transit-val">2.9d</div>
+                  <div class="ttl-transit-label">avg transit</div>
+                </div>
+                <div class="ttl-otif">
+                  <div class="ttl-otif-val warn">89.1%</div>
+                  <div class="ttl-transit-label">OTIF</div>
+                </div>
+                <div class="ttl-cost">
+                  <div class="ttl-cost-val">$2.03/lb</div>
+                </div>
+              </div>
+
+              <div class="ttl-actions">
+                <button class="btn btn-ghost btn-sm">↓ More details</button>
+                <button class="btn btn-ghost btn-sm">Compare Mode</button>
+                <button class="btn btn-ai btn-sm">✦ Show alternatives</button>
+              </div>
+            </div>
+
+            <div class="chart-card section-gap">
+              <div class="chart-header">
+                <div>
+                  <div class="chart-title">OTIF Trend — Last 12 Weeks</div>
+                  <div class="chart-subtitle">FedEx Freight · All lanes · Weekly</div>
+                </div>
+                <div class="chart-actions">
+                  <button class="btn btn-ai btn-sm">✦ Explain</button>
+                  <button class="btn btn-ghost btn-sm">↓ Export</button>
+                </div>
+              </div>
+              <div class="chart-body">
+                <div class="bar-chart-area">
+                  <div class="bar-col"><div class="bar" style="height:91%; background:var(--cerulean-300);"></div><div class="bar-label">May 26</div></div>
+                  <div class="bar-col"><div class="bar" style="height:90.8%; background:var(--cerulean-300);"></div><div class="bar-label">Jun 2</div></div>
+                  <div class="bar-col"><div class="bar" style="height:90.1%; background:var(--cerulean-300);"></div><div class="bar-label">Jun 9</div></div>
+                  <div class="bar-col"><div class="bar" style="height:89.6%; background:var(--cerulean-300);"></div><div class="bar-label">Jun 16</div></div>
+                  <div class="bar-col"><div class="bar" style="height:89.2%; background:var(--cerulean-300);"></div><div class="bar-label">Jun 23</div></div>
+                  <div class="bar-col"><div class="bar" style="height:88.9%; background:var(--cerulean-300);"></div><div class="bar-label">Jun 30</div></div>
+                  <div class="bar-col"><div class="bar" style="height:88.5%; background:var(--cerulean-300);"></div><div class="bar-label">Jul 7</div></div>
+                  <div class="bar-col"><div class="bar" style="height:88.1%; background:var(--cerulean-300);"></div><div class="bar-label">Jul 14</div></div>
+                  <div class="bar-col"><div class="bar" style="height:87.4%; background:var(--amber-500);"></div><div class="bar-label">Jul 21</div></div>
+                  <div class="bar-col"><div class="bar" style="height:86.8%; background:var(--amber-500);"></div><div class="bar-label">Jul 28</div></div>
+                  <div class="bar-col"><div class="bar" style="height:86.2%; background:var(--amber-500);"></div><div class="bar-label">Aug 4</div></div>
+                  <div class="bar-col"><div class="bar" style="height:85.6%; background:var(--amber-500);"></div><div class="bar-label">Aug 11</div></div>
+                </div>
+                <div class="otif-summary-row">
+                  <span>12W Avg: <strong>88.4%</strong></span>
+                  <span>Target: <strong>90.0%</strong></span>
+                  <span>Gap: <strong style="color:var(--red-600,#dc2626);">−4.4 pts</strong></span>
+                  <span>Trend: <strong style="color:var(--amber-600,#d97706);">Declining</strong></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-card section-gap">
+              <div class="table-header">
+                <div>
+                  <div class="chart-title">OTIF by Lane</div>
+                  <div class="chart-subtitle">FedEx Freight · Last 30 days</div>
+                </div>
+                <div style="display:flex; gap:var(--space-2);">
+                  <button class="btn btn-ghost btn-sm">Filter</button>
+                  <button class="btn btn-ghost btn-sm">↓ Export</button>
+                </div>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Lane</th>
+                    <th class="td-right">OTIF %</th>
+                    <th class="td-right">On-Time</th>
+                    <th class="td-right">In Full</th>
+                    <th class="td-right">Avg Transit</th>
+                    <th class="td-right">vs Target</th>
+                    <th style="text-align:center;">Trend</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="font-size:var(--text-xs); color:var(--slate-600);">Chicago → Atlanta</td>
+                    <td class="td-right"><span class="badge badge-success">92.1%</span></td>
+                    <td class="td-mono td-right" style="font-size:var(--text-xs);">93.4%</td>
+                    <td class="td-mono td-right" style="font-size:var(--text-xs);">98.6%</td>
+                    <td class="td-mono td-right" style="font-size:var(--text-xs);">2.1 days</td>
+                    <td class="td-right"><span class="vs-target-good">+2.1 pts</span></td>
+                    <td style="text-align:center;"><span class="trend-up">↑</span></td>
+                  </tr>
+                  <tr class="row-error">
+                    <td style="font-size:var(--text-xs); color:var(--slate-600);">Dallas → Nashville</td>
+                    <td class="td-right"><span class="badge badge-danger">81.4%</span></td>
+                    <td class="td-mono td-right" style="font-size:var(--text-xs);">82.3%</td>
+                    <td class="td-mono td-right" style="font-size:var(--text-xs);">99.0%</td>
+                    <td class="td-mono td-right" style="font-size:var(--text-xs);">3.2 days</td>
+                    <td class="td-right"><span class="vs-target-danger">−8.6 pts ⚠</span></td>
+                    <td style="text-align:center;"><span class="trend-down">↓</span></td>
+                  </tr>
+                  <tr class="row-flagged">
+                    <td style="font-size:var(--text-xs); color:var(--slate-600);">Memphis → Philadelphia</td>
+                    <td class="td-right"><span class="badge badge-amber">87.3%</span></td>
+                    <td class="td-mono td-right" style="font-size:var(--text-xs);">88.1%</td>
+                    <td class="td-mono td-right" style="font-size:var(--text-xs);">99.2%</td>
+                    <td class="td-mono td-right" style="font-size:var(--text-xs);">2.9 days</td>
+                    <td class="td-right"><span class="vs-target-warn">−2.7 pts</span></td>
+                    <td style="text-align:center;"><span class="trend-down">↓</span></td>
+                  </tr>
+                  <tr>
+                    <td style="font-size:var(--text-xs); color:var(--slate-600);">Chicago → Detroit</td>
+                    <td class="td-right"><span class="badge badge-success">94.7%</span></td>
+                    <td class="td-mono td-right" style="font-size:var(--text-xs);">95.0%</td>
+                    <td class="td-mono td-right" style="font-size:var(--text-xs);">99.7%</td>
+                    <td class="td-mono td-right" style="font-size:var(--text-xs);">1.4 days</td>
+                    <td class="td-right"><span class="vs-target-good">+4.7 pts</span></td>
+                    <td style="text-align:center;"><span class="trend-up">↑</span></td>
+                  </tr>
+                  <tr class="row-error">
+                    <td style="font-size:var(--text-xs); color:var(--slate-600);">Atlanta → Baltimore</td>
+                    <td class="td-right"><span class="badge badge-danger">83.2%</span></td>
+                    <td class="td-mono td-right" style="font-size:var(--text-xs);">84.1%</td>
+                    <td class="td-mono td-right" style="font-size:var(--text-xs);">99.1%</td>
+                    <td class="td-mono td-right" style="font-size:var(--text-xs);">2.6 days</td>
+                    <td class="td-right"><span class="vs-target-danger">−6.8 pts ⚠</span></td>
+                    <td style="text-align:center;"><span class="trend-down">↓</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="table-card section-gap">
+              <div class="table-header">
+                <div>
+                  <div class="chart-title">BOL Discrepancies — Last 30 Days</div>
+                  <div class="chart-subtitle">Invoices where billed amount deviated from BOL-declared specs</div>
+                </div>
+                <div style="display:flex; gap:var(--space-2);">
+                  <button class="btn btn-ghost btn-sm">↓ Export</button>
+                </div>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Invoice</th>
+                    <th>Lane</th>
+                    <th>Type</th>
+                    <th>BOL Declared</th>
+                    <th>Billed</th>
+                    <th class="td-right">Δ Impact</th>
+                    <th>Resolution</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="row-flagged">
+                    <td class="td-mono" style="font-size:10px;">INV-2026-00041721</td>
+                    <td style="font-size:var(--text-xs); color:var(--slate-500);">LA → Denver</td>
+                    <td style="font-size:var(--text-xs);">Freight Class Upgrade (70→85)</td>
+                    <td class="td-mono" style="font-size:var(--text-xs);">Class 70</td>
+                    <td class="td-mono" style="font-size:var(--text-xs);">Class 85</td>
+                    <td class="td-right"><span class="delta-danger">+$82.10</span></td>
+                    <td><span class="badge badge-amber">Pending Audit</span></td>
+                  </tr>
+                  <tr class="row-error">
+                    <td class="td-mono" style="font-size:10px;">INV-2026-00041519</td>
+                    <td style="font-size:var(--text-xs); color:var(--slate-500);">Atlanta → Baltimore</td>
+                    <td style="font-size:var(--text-xs);">Weight Discrepancy</td>
+                    <td class="td-mono" style="font-size:var(--text-xs);">640 lbs</td>
+                    <td class="td-mono" style="font-size:var(--text-xs);">760 lbs</td>
+                    <td class="td-right"><span class="delta-danger">+$224.50</span></td>
+                    <td><span class="badge badge-danger">Disputed</span></td>
+                  </tr>
+                  <tr class="row-flagged">
+                    <td class="td-mono" style="font-size:10px;">INV-2026-00041190</td>
+                    <td style="font-size:var(--text-xs); color:var(--slate-500);">Dallas → Nashville</td>
+                    <td style="font-size:var(--text-xs);">Accessorial Added</td>
+                    <td class="td-mono" style="font-size:var(--text-xs);">None on BOL</td>
+                    <td class="td-mono" style="font-size:var(--text-xs);">Liftgate $75</td>
+                    <td class="td-right"><span class="delta-amber">+$75.00</span></td>
+                    <td><span class="badge badge-amber">Under Review</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="ai-card-enhanced">
+              <div class="ai-card-header">
+                <span class="ai-badge">✦ AI Insight</span>
+                <span class="ai-ts">Aug 14, 2026</span>
+              </div>
+
+              <div class="ai-insight-section">
+                <div class="ai-insight-label">📌 Finding</div>
+                <p class="ai-card-text">
+                  FedEx Freight's OTIF decline is concentrated on <strong>Monday and Tuesday pickups at the Dallas terminal</strong> — consistent with known congestion at their DFW facility. This pattern has persisted for 3 weeks.
+                </p>
+                <div class="ai-confidence">Based on 42 shipments over 3 weeks. <a class="ai-evidence-link" href="#" onclick="event.preventDefault();">[See the data]</a></div>
+              </div>
+
+              <div class="ai-insight-section">
+                <div class="ai-insight-label">🔄 Alternatives</div>
+                <p class="ai-card-text">
+                  Old Dominion and SAIA both cover this lane with <strong>93%+ OTIF</strong> at within 4% of FedEx's rate. Both have consistent Monday pickup performance on Dallas-Nashville routes.
+                </p>
+              </div>
+
+              <div class="ai-insight-section">
+                <div class="ai-insight-label">💡 Recommendation</div>
+                <p class="ai-card-text">
+                  <strong>Shift 30% of Dallas → Nashville volume to SAIA as a trial for Q4.</strong> Estimated impact: +2.1 pts OTIF, +1.8% cost premium (~$1,800/month). ROI: Reduced stockouts and better SLA compliance.
+                </p>
+              </div>
+
+              <div class="ai-card-actions">
+                <button class="btn btn-ai btn-sm">✦ Show all alternatives</button>
+                <button class="btn btn-ai btn-sm">✦ Draft reallocation plan</button>
+                <button class="btn btn-ghost btn-sm">Ask follow-up question</button>
+                <button class="btn btn-ghost btn-sm">Dismiss</button>
+              </div>
+            </div>
           </div>
         </div>
-        </div><!-- /cp-alternatives-panel -->
 
+        <aside class="cp-alternatives-panel open">
+          <div class="cp-alt-header">
+            <span style="display: flex; align-items: center; gap: 6px;">🎯 Alternatives for Dallas → Nashville</span>
+          </div>
+          <div class="cp-alt-content">
+            <div class="cp-alt-section">
+              <div class="cp-alt-label">Current Lane</div>
+              <div class="cp-alt-item" style="border-left-color: var(--amber-400); background: var(--amber-050);">
+                <div class="cp-alt-item-name">FedEx Freight</div>
+                <div class="cp-alt-item-metric">OTIF: <strong>81.4%</strong> (−8.6 pts)</div>
+                <div class="cp-alt-item-metric">Transit: <strong>3.2 days</strong></div>
+                <div class="cp-alt-item-metric">Cost: <strong>$2.09/lb</strong></div>
+              </div>
+            </div>
+
+            <div class="cp-alt-section">
+              <div class="cp-alt-label">Top Alternatives</div>
+              <div class="cp-alt-item">
+                <div class="cp-alt-item-name">1. Old Dominion</div>
+                <div class="cp-alt-item-metric">OTIF: <strong style="color: var(--green-600);">+7.6 pts</strong> → 93.2%</div>
+                <div class="cp-alt-item-metric">Transit: <strong>−0.5 days</strong> → 2.3d</div>
+                <div class="cp-alt-item-metric">Cost: <strong>+4.3%</strong> → $2.18/lb</div>
+                <div class="cp-alt-item-metric" style="color: var(--slate-500); font-size: var(--text-xs); margin-top: var(--space-2);">Volume on lane: 2,400 units/mo</div>
+                <div class="cp-alt-actions">
+                  <button class="btn btn-ghost btn-sm">Details</button>
+                  <button class="btn btn-ai btn-sm">Shift</button>
+                </div>
+              </div>
+
+              <div class="cp-alt-item">
+                <div class="cp-alt-item-name">2. SAIA LTL</div>
+                <div class="cp-alt-item-metric">OTIF: <strong style="color: var(--green-600);">+7.6 pts</strong> → 93.2%</div>
+                <div class="cp-alt-item-metric">Transit: <strong>−0.3 days</strong> → 2.5d</div>
+                <div class="cp-alt-item-metric">Cost: <strong>+7.2%</strong> → $2.24/lb</div>
+                <div class="cp-alt-item-metric" style="color: var(--slate-500); font-size: var(--text-xs); margin-top: var(--space-2);">Volume on lane: 800 units/mo</div>
+                <div class="cp-alt-actions">
+                  <button class="btn btn-ghost btn-sm">Details</button>
+                  <button class="btn btn-ai btn-sm">Shift</button>
+                </div>
+              </div>
+
+              <div class="cp-alt-item">
+                <div class="cp-alt-item-name">3. Estes Express</div>
+                <div class="cp-alt-item-metric">OTIF: <strong style="color: var(--amber-600);">+3.5 pts</strong> → 89.1%</div>
+                <div class="cp-alt-item-metric">Transit: <strong>+0.1 days</strong> → 2.9d</div>
+                <div class="cp-alt-item-metric">Cost: <strong>−2.9%</strong> → $2.03/lb ✓</div>
+                <div class="cp-alt-item-metric" style="color: var(--slate-500); font-size: var(--text-xs); margin-top: var(--space-2);">Lowest cost option</div>
+                <div class="cp-alt-actions">
+                  <button class="btn btn-ghost btn-sm">Details</button>
+                  <button class="btn btn-ai btn-sm">Shift</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="cp-alt-section" style="padding-top: var(--space-4); border-top: 1px solid var(--slate-300); margin-top: var(--space-4);">
+              <button class="btn btn-ai btn-sm" style="width: 100%;">✦ Get AI recommendation</button>
+            </div>
+          </div>
+        </aside>
       </div><!-- /cp-layout-content -->
 
     </div><!-- /cp-layout -->
