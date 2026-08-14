@@ -52,6 +52,204 @@
     background: var(--slate-100);
     flex-shrink: 0;
   }
+
+  /* Post-table operational workspace */
+  .invoice-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1.75fr) minmax(300px, 1fr);
+    gap: var(--space-5);
+    align-items: start;
+  }
+
+  .invoice-side-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  .detail-kv-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .detail-kv {
+    background: var(--slate-050);
+    border: 1px solid var(--slate-100);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+  }
+
+  .detail-kv-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate-500);
+    margin-bottom: 2px;
+  }
+
+  .detail-kv-value {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--navy-900);
+    font-weight: 500;
+  }
+
+  .aging-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .aging-row {
+    display: grid;
+    grid-template-columns: 76px 1fr 56px;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .aging-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--slate-500);
+  }
+
+  .aging-track {
+    height: 7px;
+    background: var(--slate-100);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .aging-fill {
+    height: 100%;
+    border-radius: 10px;
+  }
+
+  .aging-fill.good { background: var(--success-500); }
+  .aging-fill.warn { background: var(--amber-500); }
+  .aging-fill.risk { background: var(--danger-500); }
+
+  .aging-value {
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--navy-900);
+  }
+
+  .payment-mini-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-3);
+    border-top: 1px solid var(--slate-100);
+    padding-top: var(--space-4);
+    margin-top: var(--space-4);
+  }
+
+  .payment-mini {
+    background: var(--slate-050);
+    border: 1px solid var(--slate-100);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+  }
+
+  .payment-mini .k {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate-500);
+  }
+
+  .payment-mini .v {
+    margin-top: 3px;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--navy-900);
+    font-weight: 500;
+  }
+
+  @media (max-width: 1280px) {
+    .invoice-workspace {
+      grid-template-columns: 1fr;
+    }
+
+    .status-tabs {
+      flex-wrap: wrap;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    body {
+      overflow: auto;
+    }
+
+    .app {
+      height: auto;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      display: none;
+    }
+
+    .main {
+      min-height: 100vh;
+    }
+
+    .topbar,
+    .suggestions,
+    .page-filter-bar,
+    .content {
+      padding-left: var(--space-4);
+      padding-right: var(--space-4);
+    }
+
+    .stat-row-4 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .detail-kv-grid,
+    .payment-mini-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .topbar {
+      height: auto;
+      padding-top: var(--space-3);
+      padding-bottom: var(--space-3);
+      flex-wrap: wrap;
+      gap: var(--space-3);
+    }
+
+    .ai-query-bar {
+      max-width: 100%;
+    }
+
+    .page-filter-bar {
+      gap: var(--space-3);
+      padding-top: var(--space-3);
+      padding-bottom: var(--space-3);
+    }
+
+    .filter-bar-actions {
+      margin-left: 0;
+      width: 100%;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .stat-row-4 {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 </head>
 <body>
@@ -273,6 +471,8 @@
 
       </div>
 
+      <div class="invoice-workspace">
+
       <!-- Invoice Table -->
       <div class="table-card">
 
@@ -288,6 +488,7 @@
           </div>
         </div>
 
+        <div class="table-scroll">
         <table>
           <thead>
             <tr>
@@ -473,6 +674,7 @@
 
           </tbody>
         </table>
+        </div>
 
         <!-- Table Footer / Pagination -->
         <div class="table-footer">
@@ -489,6 +691,161 @@
         </div>
 
       </div><!-- /.table-card -->
+
+      <div class="invoice-side-stack">
+
+        <div class="ai-card">
+          <div class="ai-card-header">
+            <span class="ai-badge">✦ AI Insight</span>
+            <span class="ai-ts">Refreshed 2m ago</span>
+          </div>
+          <p class="ai-card-text">
+            61% of your pending-audit invoices are clustered on 4 Midwest-to-Southeast lanes. The largest concentration is class variance between BOL and billed data, with an estimated recovery opportunity of <strong>$42.7K</strong> if disputed this week.
+          </p>
+          <div class="ai-card-actions">
+            <button class="btn btn-ai btn-sm">✦ Draft dispute packets</button>
+            <button class="btn btn-ghost btn-sm">Open lane breakdown</button>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Selected Invoice Detail</div>
+              <div class="chart-subtitle">INV-2026-00041519 · ABF Freight</div>
+            </div>
+            <span class="badge badge-amber">Pending Audit</span>
+          </div>
+          <div class="chart-body">
+            <div class="detail-kv-grid">
+              <div class="detail-kv"><div class="detail-kv-label">Declared Class</div><div class="detail-kv-value">110</div></div>
+              <div class="detail-kv"><div class="detail-kv-label">Billed Class</div><div class="detail-kv-value">125</div></div>
+              <div class="detail-kv"><div class="detail-kv-label">Declared Weight</div><div class="detail-kv-value">640 lbs</div></div>
+              <div class="detail-kv"><div class="detail-kv-label">Billed Weight</div><div class="detail-kv-value">760 lbs</div></div>
+              <div class="detail-kv"><div class="detail-kv-label">Contracted Amount</div><div class="detail-kv-value">$1,820.00</div></div>
+              <div class="detail-kv"><div class="detail-kv-label">Billed Amount</div><div class="detail-kv-value" style="color:var(--danger-500);">$2,044.50</div></div>
+            </div>
+            <div style="display:flex; gap:var(--space-2); margin-top:var(--space-4); flex-wrap:wrap;">
+              <button class="btn btn-success btn-sm">Approve</button>
+              <button class="btn btn-danger btn-sm">Dispute with Carrier</button>
+              <button class="btn btn-ghost btn-sm">Escalate</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="shipment-card at-risk">
+          <div class="shipment-card-header">
+            <div class="shipment-ids">
+              <div class="shipment-id-block">
+                <div class="s-id-label">BOL</div>
+                <div class="s-id-val">BOL-2026-11044</div>
+              </div>
+              <div class="shipment-id-block">
+                <div class="s-id-label">PRO</div>
+                <div class="s-id-val">5590-31002</div>
+              </div>
+            </div>
+            <span class="badge badge-amber">In Audit</span>
+          </div>
+          <div class="shipment-route">
+            <div class="route-node">
+              <div class="route-city">Atlanta, GA</div>
+              <div class="route-detail">Origin pickup</div>
+            </div>
+            <div class="route-line">
+              <div class="progress-track">
+                <div class="progress-fill at-risk" style="width:78%;"></div>
+                <div class="progress-dot at-risk" style="left:78%;"></div>
+              </div>
+              <div class="route-carrier">ABF Freight · LTL</div>
+            </div>
+            <div class="route-node" style="text-align:right;">
+              <div class="route-city">Baltimore, MD</div>
+              <div class="route-detail">Delivery confirmed</div>
+            </div>
+          </div>
+          <div class="milestone-steps">
+            <div class="milestone-step done">
+              <div class="step-dot done">✓</div>
+              <div class="step-label done">BOL Issued</div>
+            </div>
+            <div class="milestone-step done">
+              <div class="step-dot done">✓</div>
+              <div class="step-label done">Picked Up</div>
+            </div>
+            <div class="milestone-step done">
+              <div class="step-dot done">✓</div>
+              <div class="step-label done">Delivered</div>
+            </div>
+            <div class="milestone-step active">
+              <div class="step-dot active">•</div>
+              <div class="step-label active">Audit Review</div>
+            </div>
+            <div class="milestone-step">
+              <div class="step-dot">5</div>
+              <div class="step-label">Carrier Response</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Exception Aging Report</div>
+              <div class="chart-subtitle">Open pending-audit + exception invoices</div>
+            </div>
+          </div>
+          <div class="chart-body">
+            <div class="aging-list">
+              <div class="aging-row">
+                <div class="aging-label">0-7 days</div>
+                <div class="aging-track"><div class="aging-fill good" style="width:58%;"></div></div>
+                <div class="aging-value">21</div>
+              </div>
+              <div class="aging-row">
+                <div class="aging-label">8-14 days</div>
+                <div class="aging-track"><div class="aging-fill warn" style="width:31%;"></div></div>
+                <div class="aging-value">11</div>
+              </div>
+              <div class="aging-row">
+                <div class="aging-label">15-30 days</div>
+                <div class="aging-track"><div class="aging-fill warn" style="width:19%;"></div></div>
+                <div class="aging-value">7</div>
+              </div>
+              <div class="aging-row">
+                <div class="aging-label">30+ days</div>
+                <div class="aging-track"><div class="aging-fill risk" style="width:8%;"></div></div>
+                <div class="aging-value">3</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Payment Status Snapshot</div>
+              <div class="chart-subtitle">Last 30 days · Carrier disbursement flow</div>
+            </div>
+          </div>
+          <div class="chart-body">
+            <div class="detail-kv-grid">
+              <div class="detail-kv"><div class="detail-kv-label">Paid</div><div class="detail-kv-value">$10.3M</div></div>
+              <div class="detail-kv"><div class="detail-kv-label">Approved, Awaiting Pay</div><div class="detail-kv-value">$914K</div></div>
+              <div class="detail-kv"><div class="detail-kv-label">In Audit</div><div class="detail-kv-value">$2.1M</div></div>
+              <div class="detail-kv"><div class="detail-kv-label">Disputed</div><div class="detail-kv-value" style="color:var(--amber-500);">$208K</div></div>
+            </div>
+            <div class="payment-mini-grid">
+              <div class="payment-mini"><div class="k">Avg days to pay</div><div class="v">8.4</div></div>
+              <div class="payment-mini"><div class="k">Carrier confirms</div><div class="v">99.1%</div></div>
+              <div class="payment-mini"><div class="k">Late disbursements</div><div class="v" style="color:var(--danger-500);">12</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      </div>
 
     </div><!-- /.content -->
 
