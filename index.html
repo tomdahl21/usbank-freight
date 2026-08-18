@@ -30,6 +30,29 @@
 </head>
 <body>
 
+<div class="modal-backdrop" id="accessModal" aria-live="polite">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="accessModalTitle">
+    <div class="modal-header">
+      <div class="modal-header-top">
+        <div class="modal-lock">🔒</div>
+      </div>
+      <div class="modal-title" id="accessModalTitle">Secure access required</div>
+      <div class="modal-subtitle">Enter your password to unlock the Freight Manager dashboard.</div>
+    </div>
+
+    <div class="modal-body">
+      <form class="modal-form" id="passwordForm">
+        <div class="modal-field">
+          <label class="modal-label" for="passwordInput">Password</label>
+          <input class="modal-input" id="passwordInput" type="password" placeholder="Enter password" autocomplete="current-password" />
+        </div>
+        <div class="modal-error" id="passwordError" aria-live="polite"></div>
+        <button type="submit" class="btn btn-primary btn-lg" style="width:100%; justify-content:center;">Unlock dashboard</button>
+      </form>
+    </div>
+  </div>
+</div>
+
 <div class="app">
 
   <!-- ==================== SIDEBAR ==================== -->
@@ -413,6 +436,56 @@
     </div>
   </div>
 </div>
+
+<script>
+  const accessModal = document.getElementById('accessModal');
+  const passwordForm = document.getElementById('passwordForm');
+  const passwordInput = document.getElementById('passwordInput');
+  const passwordError = document.getElementById('passwordError');
+  const validPasswords = ['USBank2026', 'freight2026'];
+
+  function hideAccessModal() {
+    accessModal.classList.add('is-hidden');
+    passwordInput.value = '';
+    passwordError.textContent = '';
+  }
+
+  function showAccessModal() {
+    accessModal.classList.remove('is-hidden');
+    passwordInput.focus();
+  }
+
+  function unlockDashboard() {
+    sessionStorage.setItem('freightAccessApproved', 'true');
+    hideAccessModal();
+  }
+
+  if (sessionStorage.getItem('freightAccessApproved') === 'true') {
+    hideAccessModal();
+  } else {
+    setTimeout(showAccessModal, 150);
+  }
+
+  passwordForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+    const submittedPassword = passwordInput.value.trim();
+
+    if (validPasswords.includes(submittedPassword)) {
+      unlockDashboard();
+      return;
+    }
+
+    passwordError.textContent = 'Incorrect password. Please try again.';
+    passwordInput.focus();
+    passwordInput.select();
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && !accessModal.classList.contains('is-hidden')) {
+      passwordInput.focus();
+    }
+  });
+</script>
 
 </body>
 </html>
