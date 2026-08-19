@@ -1,0 +1,85 @@
+/*
+  tokens.css — Design Tokens
+  US Bank Freight Analytics — brand-aligned token system.
+
+  Palette:
+    Navy    → US Bank Deep Sapphire (#0C2074) — institutional authority, sidebar/chrome
+    Cerulean → US Bank interactive blue (#00438F) — data in motion, flow, links
+    Amber   → AI interactions ONLY — earns attention by scarcity
+    Red     → US Bank Crimson (#DE162B) — alerts, danger, logo accent
+    Slate   → neutral surfaces, secondary text, borders
+*/
+
+:root {
+
+  /* === Brand Palette === */
+  --navy-900: #0C2074;   /* US Bank Deep Sapphire — sidebar, primary buttons */
+  --navy-800: #0E2480;   /* hover state on navy */
+  --navy-700: #1A3294;   /* active nav item bg */
+  --navy-600: #243AA0;   /* lighter navy accent */
+  --cerulean-500: #00438F; /* US Bank interactive blue — links, badges, active states */
+  --cerulean-400: #0055B3;
+  --cerulean-300: #4080CC;
+  --cerulean-100: #D0E4F5;
+  --cerulean-050: #EBF3FB;
+  --amber-500: #D97D0F;
+  --amber-400: #F0930E;
+  --amber-200: #FDD89C;
+  --amber-050: #FEF5E4;
+  --slate-700: #3A4556;
+  --slate-500: #5C6E84;
+  --slate-300: #A8B6C5;
+  --slate-100: #DCE4EC;
+  --slate-050: #F2F5F8;
+  --white: #FFFFFF;
+  --off-white: #F7F9FB;
+  --success-500: #1D8A5C;
+  --success-100: #D1EFE2;
+  --danger-500: #DE162B;  /* US Bank Crimson Red */
+  --danger-100: #FAD7D3;
+
+  /* === Typography === */
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'DM Mono', 'Courier New', monospace;
+
+  /* === Type Scale === */
+  --text-xs:   0.6875rem;   /* 11px */
+  --text-sm:   0.8125rem;   /* 13px */
+  --text-base: 0.9375rem;   /* 15px */
+  --text-md:   1.0625rem;   /* 17px */
+  --text-lg:   1.25rem;     /* 20px */
+  --text-xl:   1.5rem;      /* 24px */
+  --text-2xl:  2rem;        /* 32px */
+  --text-3xl:  2.75rem;     /* 44px */
+
+  /* === Spacing === */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* === Radii === */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* === Shadows === */
+  --shadow-card:     0 1px 4px rgba(12,32,116,0.08), 0 4px 16px rgba(12,32,116,0.06);
+  --shadow-elevated: 0 4px 12px rgba(12,32,116,0.12), 0 12px 32px rgba(12,32,116,0.10);
+  --shadow-focus:    0 0 0 3px rgba(0,67,143,0.25);
+
+  /* === Signature Element === */
+  --seam: 2px solid var(--cerulean-400);
+
+  /* === Layout === */
+  --sidebar-width:  232px;
+  --topbar-height:  64px;
+  --suggest-height: 36px;
+}
